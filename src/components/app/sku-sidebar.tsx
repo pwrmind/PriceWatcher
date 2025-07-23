@@ -17,6 +17,7 @@ import type { Product } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Input } from '@/components/ui/input';
+import { ThemeToggle } from './theme-toggle';
 
 interface SkuSidebarProps {
   products: Product[];
@@ -54,7 +55,7 @@ export function SkuSidebar({
         <h2 className="text-xl font-semibold px-2">MarketWatch</h2>
         <form onSubmit={handleAddSku} className="relative px-2">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input name="sku" placeholder="Track new SKU..." className="pl-8 bg-background" />
+          <Input name="sku" placeholder="Отследить новый SKU..." className="pl-8 bg-background" />
         </form>
       </SidebarHeader>
       <Separator />
@@ -93,23 +94,23 @@ export function SkuSidebar({
                                 className="h-7 w-7" 
                                 onClick={(e) => { e.stopPropagation(); onToggleCompare(product.id)}} 
                                 disabled={product.id === selectedSkuId}
-                                aria-label={comparisonSkuIds.includes(product.id) ? "Remove from comparison" : "Add to comparison"}
+                                aria-label={comparisonSkuIds.includes(product.id) ? "Убрать из сравнения" : "Добавить к сравнению"}
                             >
                                 {comparisonSkuIds.includes(product.id) ? <CheckSquare className="h-4 w-4 text-primary"/> : <Square className="h-4 w-4"/>}
                             </Button>
                         </TooltipTrigger>
                         <TooltipContent>
-                            <p>{comparisonSkuIds.includes(product.id) ? "Remove from comparison" : "Add to comparison"}</p>
+                            <p>{comparisonSkuIds.includes(product.id) ? "Убрать из сравнения" : "Добавить к сравнению"}</p>
                         </TooltipContent>
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={(e) => {e.stopPropagation(); onDeleteSku(product.id);}} aria-label="Delete SKU">
+                            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={(e) => {e.stopPropagation(); onDeleteSku(product.id);}} aria-label="Удалить SKU">
                                 <Trash2 className="h-4 w-4" />
                             </Button>
                         </TooltipTrigger>
                         <TooltipContent>
-                            <p>Delete SKU</p>
+                            <p>Удалить SKU</p>
                         </TooltipContent>
                     </Tooltip>
                 </div>
@@ -119,10 +120,11 @@ export function SkuSidebar({
         </SidebarMenu>
       </SidebarContent>
       <Separator/>
-      <SidebarFooter>
+      <SidebarFooter className="flex-row items-center justify-between px-2">
         <p className="text-xs text-muted-foreground text-center">
             &copy; 2024 MarketWatch
         </p>
+        <ThemeToggle />
       </SidebarFooter>
     </Sidebar>
   );

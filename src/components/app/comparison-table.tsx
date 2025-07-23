@@ -29,15 +29,15 @@ export function ComparisonTable({ mainProduct, comparisonProducts }: ComparisonT
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Product Comparison</CardTitle>
-        <CardDescription>Side-by-side comparison of tracked products.</CardDescription>
+        <CardTitle>Сравнение продуктов</CardTitle>
+        <CardDescription>Сравнение отслеживаемых продуктов бок о бок.</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[150px] font-semibold">Attribute</TableHead>
+                <TableHead className="w-[150px] font-semibold">Атрибут</TableHead>
                 {allProducts.map((product) => (
                   <TableHead key={product.id} className="min-w-[200px]">
                     <div className="flex items-start gap-4">
@@ -53,7 +53,7 @@ export function ComparisonTable({ mainProduct, comparisonProducts }: ComparisonT
             </TableHeader>
             <TableBody>
               <TableRow>
-                <TableCell className="font-semibold">Price</TableCell>
+                <TableCell className="font-semibold">Цена</TableCell>
                 {allProducts.map((product) => (
                   <TableCell key={product.id} className="font-bold text-lg text-primary">
                     ${product.priceHistory.slice(-1)[0]?.price.toFixed(2)}
@@ -61,13 +61,13 @@ export function ComparisonTable({ mainProduct, comparisonProducts }: ComparisonT
                 ))}
               </TableRow>
               <TableRow>
-                <TableCell className="font-semibold">Marketplace</TableCell>
+                <TableCell className="font-semibold">Торговая площадка</TableCell>
                 {allProducts.map((product) => (
                   <TableCell key={product.id}>{product.marketplace}</TableCell>
                 ))}
               </TableRow>
               <TableRow>
-                <TableCell className="font-semibold">Rating</TableCell>
+                <TableCell className="font-semibold">Рейтинг</TableCell>
                 {allProducts.map((product) => (
                   <TableCell key={product.id}>
                     {renderRating(product.rating)}
@@ -75,13 +75,13 @@ export function ComparisonTable({ mainProduct, comparisonProducts }: ComparisonT
                 ))}
               </TableRow>
                <TableRow>
-                <TableCell className="font-semibold">Reviews</TableCell>
+                <TableCell className="font-semibold">Отзывы</TableCell>
                 {allProducts.map((product) => (
                   <TableCell key={product.id}>{product.reviews.toLocaleString()}</TableCell>
                 ))}
               </TableRow>
               <TableRow>
-                <TableCell className="font-semibold align-top">Features</TableCell>
+                <TableCell className="font-semibold align-top">Особенности</TableCell>
                 {allProducts.map((product) => (
                   <TableCell key={product.id}>
                     <div className="flex flex-wrap gap-2">

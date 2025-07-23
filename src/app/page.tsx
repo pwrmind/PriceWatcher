@@ -33,15 +33,15 @@ export default function Home() {
   const handleAddSku = (id: string) => {
     if (products.some(p => p.id === id)) {
       toast({
-        title: "SKU Already Tracked",
-        description: `Product with SKU ${id} is already in your list.`,
+        title: "SKU уже отслеживается",
+        description: `Продукт с SKU ${id} уже есть в вашем списке.`,
         variant: "default",
       });
       return;
     }
     toast({
-      title: "SKU Not Found",
-      description: `Could not find product data for SKU ${id}. This is a demo app.`,
+      title: "SKU не найден",
+      description: `Не удалось найти данные о продукте для SKU ${id}. Это демонстрационное приложение.`,
       variant: "destructive",
     });
   };

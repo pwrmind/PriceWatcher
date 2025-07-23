@@ -47,7 +47,7 @@ export function PricePrediction({ sku, priceHistory }: PricePredictionProps) {
           <HelpCircle className="h-4 w-4 text-destructive" />
         </TooltipTrigger>
         <TooltipContent>
-          <p>{error || 'Prediction not available.'}</p>
+          <p>{error || 'Прогноз недоступен.'}</p>
         </TooltipContent>
       </Tooltip>
     );
@@ -77,7 +77,7 @@ export function PricePrediction({ sku, priceHistory }: PricePredictionProps) {
       </TooltipTrigger>
       <TooltipContent className="max-w-xs">
         <p className="font-semibold">
-          {willPriceDrop ? 'Price Drop Likely' : 'Price Rise/Stable Likely'}
+          {willPriceDrop ? 'Вероятно падение цены' : 'Вероятен рост/стабильность цены'}
         </p>
         <p className="text-sm text-muted-foreground">{reason}</p>
       </TooltipContent>
