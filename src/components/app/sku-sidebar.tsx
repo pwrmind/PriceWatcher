@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Search, Trash2, Building, Users, Globe } from 'lucide-react';
@@ -156,6 +157,7 @@ export function SkuSidebar({
         <SidebarMenu className="p-2">
           {products.map((product) => {
             const manager = managers.find(m => m.id === product.managerId);
+            const shop = shops.find(s => s.id === product.shopId);
             return (
                 <SidebarMenuItem key={product.id} 
                 className={cn(
@@ -181,19 +183,31 @@ export function SkuSidebar({
                     </div>
                     </div>
                     <div className="flex flex-col items-center gap-1 ml-auto">
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Avatar className="w-6 h-6">
-                                    <AvatarImage src={manager?.avatarUrl} alt={manager?.name} />
-                                    <AvatarFallback>{manager?.name.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>{manager?.name}</p>
-                            </TooltipContent>
-                        </Tooltip>
+                        <div className="flex items-center gap-2">
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Avatar className="w-6 h-6">
+                                        <AvatarImage src={manager?.avatarUrl} alt={manager?.name} />
+                                        <AvatarFallback>{manager?.name.charAt(0)}</AvatarFallback>
+                                    </Avatar>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{manager?.name}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                             <Tooltip>
+                                <TooltipTrigger asChild>
+                                     <div className="flex items-center justify-center w-6 h-6 rounded-full bg-muted">
+                                        <Building className="w-4 h-4 text-muted-foreground" />
+                                     </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{shop?.name}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </div>
                          {product.notifications > 0 && (
-                            <Badge variant="destructive" className="h-5 w-5 p-0 flex items-center justify-center text-xs">{product.notifications}</Badge>
+                            <Badge variant="destructive" className="h-5 w-5 p-0 flex items-center justify-center text-xs self-center mt-1">{product.notifications}</Badge>
                          )}
                     </div>
                     <Tooltip>
