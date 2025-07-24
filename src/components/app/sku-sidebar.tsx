@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Search, Building, Users, Globe, Plus, UserPlus } from 'lucide-react';
+import { Search, Building, Users, Globe, Plus, UserPlus, LogOut } from 'lucide-react';
 import Image from 'next/image';
 import {
   Sidebar,
@@ -85,7 +85,9 @@ export function SkuSidebar({
 
   const handleManagerSelect = (value: string) => {
     if (value === 'add-new-manager') {
-      setAddManagerOpen(true);
+      if (selectedShopId !== 'all') {
+        setAddManagerOpen(true);
+      }
     } else {
       onManagerChange(value);
     }
@@ -139,12 +141,14 @@ export function SkuSidebar({
                 </SelectContent>
             </Select>
             
-            <AddManagerDialog 
-              open={addManagerOpen} 
-              onOpenChange={setAddManagerOpen} 
-              onAddNewManager={onAddNewManager}
-              shopId={selectedShopId}
-            />
+            {selectedShopId !== 'all' && (
+              <AddManagerDialog 
+                open={addManagerOpen} 
+                onOpenChange={setAddManagerOpen} 
+                onAddNewManager={onAddNewManager}
+                shopId={selectedShopId}
+              />
+            )}
             <Select value={selectedManagerId} onValueChange={handleManagerSelect} disabled={addManagerOpen || selectedShopId === 'all'}>
               <SelectTrigger className="w-full">
                 <SelectValue>
@@ -309,11 +313,34 @@ export function SkuSidebar({
         </SidebarMenu>
       </SidebarContent>
       <Separator/>
-      <SidebarFooter className="flex-row items-center justify-between px-2">
-        <p className="text-xs text-muted-foreground text-center">
-            &copy; 2024 MarketWatch
-        </p>
-        <ThemeToggle />
+      <SidebarFooter>
+        <div className="flex items-center gap-3 p-2">
+            <Avatar className="w-9 h-9">
+                <AvatarImage src="https://placehold.co/40x40.png" alt="User" />
+                <AvatarFallback>U</AvatarFallback>
+            </Avatar>
+            <div className="flex-grow overflow-hidden">
+                <p className="font-semibold truncate text-sm">Текущий пользователь</p>
+                <p className="text-xs text-muted-foreground truncate">user@example.com</p>
+            </div>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <LogOut className="h-4 w-4" />
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>Выйти</p>
+                </TooltipContent>
+            </Tooltip>
+        </div>
+        <Separator />
+        <div className="flex-row items-center justify-between px-2 flex">
+            <p className="text-xs text-muted-foreground text-center">
+                &copy; 2024 MarketWatch
+            </p>
+            <ThemeToggle />
+        </div>
       </SidebarFooter>
     </Sidebar>
   );
