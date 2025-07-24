@@ -6,7 +6,7 @@ import { SkuSidebar } from '@/components/app/sku-sidebar';
 import { PriceHistoryChart } from '@/components/app/price-history-chart';
 import { ComparisonSection } from '@/components/app/comparison-section';
 import { RecommendedActions } from '@/components/app/recommended-actions';
-import { allAvailableProducts as allAvailableProductsData, managedProducts as managedProductsData, managers, shops } from '@/lib/mock-data';
+import { allAvailableProducts as allAvailableProductsData, managedProducts as managedProductsData, managers as allManagers, shops } from '@/lib/mock-data';
 import type { Product, Manager, Shop } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 
@@ -16,19 +16,30 @@ export default function Home() {
   const allAvailableProducts = useMemo(() => allAvailableProductsData, []);
   
   const [trackedSkus, setTrackedSkus] = useState<Product[]>(managedProductsData);
-  const [selectedShopId, setSelectedShopId] = useState<string>(shops[0].id);
+  const [selectedShopId, setSelectedShopId] = useState<string>('all');
 
-  const managersForSelectedShop = useMemo(() => managers.filter(m => m.shopId === selectedShopId), [selectedShopId]);
+  const managersForSelectedShop = useMemo(() => {
+    if (selectedShopId === 'all') {
+      return allManagers;
+    }
+    return allManagers.filter(m => m.shopId === selectedShopId)
+  }, [selectedShopId]);
   
   const [selectedManagerId, setSelectedManagerId] = useState<string>('all');
   
-  const productsForSelectedShop = useMemo(() => trackedSkus.filter(p => p.shopId === selectedShopId), [trackedSkus, selectedShopId]);
+  const productsForSelectedShop = useMemo(() => {
+    if (selectedShopId === 'all') {
+      return trackedSkus;
+    }
+    return trackedSkus.filter(p => p.shopId === selectedShopId)
+  }, [trackedSkus, selectedShopId]);
   
   const managedProducts = useMemo(() => {
+    const baseProducts = productsForSelectedShop;
     if (selectedManagerId === 'all') {
-      return productsForSelectedShop;
+      return baseProducts;
     }
-    return productsForSelectedShop.filter(p => p.managerId === selectedManagerId)
+    return baseProducts.filter(p => p.managerId === selectedManagerId)
   }, [productsForSelectedShop, selectedManagerId]);
   
   const [selectedSkuId, setSelectedSkuId] = useState<string | null>(managedProducts[0]?.id || null);
@@ -36,9 +47,9 @@ export default function Home() {
 
   const handleShopChange = (shopId: string) => {
     setSelectedShopId(shopId);
-    setSelectedManagerId('all'); // Reset manager filter
+    setSelectedManagerId('all');
 
-    const newShopProducts = trackedSkus.filter(p => p.shopId === shopId);
+    const newShopProducts = shopId !== 'all' ? trackedSkus.filter(p => p.shopId === shopId) : trackedSkus;
     setSelectedSkuId(newShopProducts[0]?.id || null);
   };
 
@@ -48,7 +59,8 @@ export default function Home() {
   
   const handleManagerChange = (managerId: string) => {
     setSelectedManagerId(managerId);
-    const newManagerProducts = managerId !== 'all' ? productsForSelectedShop.filter(p => p.managerId === managerId) : productsForSelectedShop;
+    const baseProducts = selectedShopId !== 'all' ? trackedSkus.filter(p => p.shopId === selectedShopId) : trackedSkus;
+    const newManagerProducts = managerId !== 'all' ? baseProducts.filter(p => p.managerId === managerId) : baseProducts;
     setSelectedSkuId(newManagerProducts[0]?.id || null);
   };
 
@@ -65,7 +77,7 @@ export default function Home() {
     const productToAdd = allAvailableProducts.find(p => p.id === id);
 
     if (productToAdd) {
-        if (productToAdd.shopId !== selectedShopId) {
+        if (selectedShopId !== 'all' && productToAdd.shopId !== selectedShopId) {
              toast({
                 title: "Неверный магазин",
                 description: `Этот SKU принадлежит другому магазину.`,
@@ -73,7 +85,6 @@ export default function Home() {
             });
             return;
         }
-        // When adding, we don't check manager if "All managers" is selected
         if (selectedManagerId !== 'all' && productToAdd.managerId !== selectedManagerId) {
              toast({
                 title: "Неверный менеджер",
@@ -101,14 +112,14 @@ export default function Home() {
     setTrackedSkus(prods => {
       const remainingProducts = prods.filter(p => p.id !== id);
       if (selectedSkuId === id) {
-        const remainingManaged = selectedManagerId !== 'all' 
-          ? remainingProducts.filter(p => p.managerId === selectedManagerId && p.shopId === selectedShopId)
-          : remainingProducts.filter(p => p.shopId === selectedShopId);
+        let remainingManaged = selectedShopId !== 'all' ? remainingProducts.filter(p => p.shopId === selectedShopId) : remainingProducts;
+        if (selectedManagerId !== 'all') {
+          remainingManaged = remainingManaged.filter(p => p.managerId === selectedManagerId);
+        }
         setSelectedSkuId(remainingManaged[0]?.id || null);
       }
       return remainingProducts;
     });
-    // Also remove from comparison if it's there
     setComparisonProducts(comps => comps.filter(c => c.id !== id));
   };
   

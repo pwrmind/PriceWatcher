@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, Trash2, Building, Users } from 'lucide-react';
+import { Search, Trash2, Building, Users, Globe } from 'lucide-react';
 import Image from 'next/image';
 import {
   Sidebar,
@@ -72,12 +72,27 @@ export function SkuSidebar({
                 <SelectTrigger className="w-full">
                     <SelectValue>
                         <div className="flex items-center gap-2">
-                           <Building className="w-5 h-5" />
-                           <span>{selectedShop?.name}</span>
+                           {selectedShop ? (
+                              <>
+                                <Building className="w-5 h-5" />
+                                <span>{selectedShop.name}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Globe className="w-5 h-5" />
+                                <span>Все магазины</span>
+                              </>
+                            )}
                         </div>
                     </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
+                    <SelectItem value="all">
+                        <div className="flex items-center gap-2">
+                            <Globe className="w-5 h-5" />
+                            <span>Все магазины</span>
+                        </div>
+                    </SelectItem>
                     {shops.map(shop => (
                         <SelectItem key={shop.id} value={shop.id}>
                             <div className="flex items-center gap-2">
