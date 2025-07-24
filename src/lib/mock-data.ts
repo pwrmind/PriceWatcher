@@ -48,7 +48,7 @@ export const managers: Manager[] = [
   { id: 'manager-4', name: 'Игорь Васильев', avatarUrl: 'https://placehold.co/40x40.png', shopId: 'shop-2' },
 ];
 
-const allProductsData: Omit<Product, 'priceHistory' | 'shopId' | 'marketplace'>[] = [
+const allProductsData: Omit<Product, 'priceHistory' | 'shopId' | 'marketplace' | 'currentPrice'>[] = [
   {
     id: 'B08H93ZRK9',
     name: 'Echo Dot (4-го поколения)',
@@ -140,6 +140,8 @@ const basePrices: { [key: string]: number } = {
   'B07XJ8C8F7': 299.00,
   'B08F26C7R1': 249.99,
   'B0C1J3V6P4': 129.99,
+  'COMP-GGL-NEST-A': 99.99,
+  'COMP-BOSE-QC-45': 329.00,
 };
 
 const productMarketplaces: { [key: string]: { shopId: string, marketplace: string } } = {
@@ -154,7 +156,7 @@ const productMarketplaces: { [key: string]: { shopId: string, marketplace: strin
 };
 
 // Add some competitor products that don't belong to any of our shops
-const competitorProducts: Omit<Product, 'priceHistory' | 'shopId' | 'managerId' | 'notifications'>[] = [
+const competitorProducts: Omit<Product, 'priceHistory' | 'shopId' | 'managerId' | 'notifications' | 'currentPrice'>[] = [
     {
         id: 'COMP-GGL-NEST-A',
         name: 'Google Nest Audio',
@@ -178,21 +180,29 @@ const competitorProducts: Omit<Product, 'priceHistory' | 'shopId' | 'managerId' 
 export const allAvailableProducts: Product[] = [
     ...allProductsData.map(p => {
         const marketInfo = productMarketplaces[p.id];
+        const priceHistory = generatePriceHistory(basePrices[p.id] || 100, 365, p.id);
+        const currentPrice = priceHistory[priceHistory.length - 1].price;
         return {
             ...p,
             shopId: marketInfo.shopId,
             marketplace: marketInfo.marketplace,
-            priceHistory: generatePriceHistory(basePrices[p.id] || 100, 365, p.id),
+            priceHistory,
+            currentPrice,
         }
     }),
-    ...competitorProducts.map(p => ({
-        ...p,
-        id: p.id,
-        shopId: 'competitor',
-        managerId: null,
-        notifications: 0,
-        priceHistory: generatePriceHistory((basePrices[p.id] || 150) * 1.1, 365, p.id),
-    }))
+    ...competitorProducts.map(p => {
+        const priceHistory = generatePriceHistory((basePrices[p.id] || 150) * 1.1, 365, p.id);
+        const currentPrice = priceHistory[priceHistory.length - 1].price;
+        return {
+            ...p,
+            id: p.id,
+            shopId: 'competitor',
+            managerId: null,
+            notifications: 0,
+            priceHistory,
+            currentPrice,
+        }
+    })
 ];
 
 export const managedProducts: Product[] = allAvailableProducts.filter(p => p.shopId !== 'competitor');

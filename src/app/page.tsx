@@ -190,6 +190,32 @@ export default function Home() {
       variant: 'default',
     });
   };
+  
+  const handleUpdatePrice = (skuId: string, newPrice: number) => {
+    setTrackedSkus(prev => 
+      prev.map(p => {
+        if (p.id === skuId) {
+          const newPriceHistory = [...p.priceHistory];
+          const today = new Date().toISOString().split('T')[0];
+          const lastEntry = newPriceHistory[newPriceHistory.length - 1];
+
+          if (lastEntry.date === today) {
+            lastEntry.price = newPrice;
+          } else {
+            newPriceHistory.push({ date: today, price: newPrice });
+          }
+          
+          return { ...p, priceHistory: newPriceHistory, currentPrice: newPrice };
+        }
+        return p;
+      })
+    );
+     toast({
+        title: "Цена обновлена",
+        description: `Новая цена для SKU ${skuId} установлена в размере $${newPrice.toFixed(2)}.`,
+        variant: "default",
+    });
+  };
 
   const mainProduct = useMemo(() => trackedSkus.find(p => p.id === selectedSkuId), [trackedSkus, selectedSkuId]);
 
@@ -233,6 +259,7 @@ export default function Home() {
                   availableManagers={managersForMainProduct}
                   onAssignManager={handleAssignManager}
                   onUnassignManager={handleUnassignManager}
+                  onUpdatePrice={handleUpdatePrice}
                 />
               </div>
               <div className="lg:col-span-3">

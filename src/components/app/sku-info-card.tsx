@@ -4,9 +4,10 @@
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Building, Star, UserPlus } from 'lucide-react';
+import { Building, Star, UserPlus, Pencil } from 'lucide-react';
 import type { Product, Manager } from '@/lib/types';
 import { AssignManagerDialog } from './assign-manager-dialog';
+import { EditPriceDialog } from './edit-price-dialog';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
@@ -17,9 +18,10 @@ interface SkuInfoCardProps {
   availableManagers: Manager[];
   onAssignManager: (skuId: string, managerId: string) => void;
   onUnassignManager: (skuId: string) => void;
+  onUpdatePrice: (skuId: string, newPrice: number) => void;
 }
 
-export function SkuInfoCard({ product, manager, availableManagers, onAssignManager, onUnassignManager }: SkuInfoCardProps) {
+export function SkuInfoCard({ product, manager, availableManagers, onAssignManager, onUnassignManager, onUpdatePrice }: SkuInfoCardProps) {
   if (!product) {
     return (
       <Card className="h-full">
@@ -92,8 +94,23 @@ export function SkuInfoCard({ product, manager, availableManagers, onAssignManag
                 data-ai-hint="product image"
             />
         </div>
-        <div>
-            {renderRating(product.rating, product.reviews)}
+        <div className="flex justify-between items-center">
+             {renderRating(product.rating, product.reviews)}
+             <div className="text-right">
+                <p className="text-sm text-muted-foreground">Текущая цена</p>
+                <div className="flex items-center gap-2">
+                    <p className="text-2xl font-bold text-primary">${product.currentPrice.toFixed(2)}</p>
+                     <EditPriceDialog 
+                        currentPrice={product.currentPrice} 
+                        onUpdatePrice={(newPrice) => onUpdatePrice(product.id, newPrice)}
+                      >
+                         <Button variant="ghost" size="icon" className="h-7 w-7">
+                            <Pencil className="h-4 w-4"/>
+                            <span className="sr-only">Изменить цену</span>
+                         </Button>
+                     </EditPriceDialog>
+                </div>
+            </div>
         </div>
          <div>
             <h4 className="font-semibold mb-2">Ключевые особенности:</h4>

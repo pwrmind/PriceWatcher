@@ -27,6 +27,7 @@ export type Product = {
   features: string[];
   priceHistory: PriceData[];
   notifications: number;
+  currentPrice: number;
 };
 
 export type PricePredictionType = {
