@@ -6,16 +6,29 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Star, Trash2 } from 'lucide-react';
-import type { Product } from '@/lib/types';
+import type { Product, Manager } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { SkuInfoModal } from './sku-info-modal';
 
 interface ComparisonTableProps {
   mainProduct: Product | undefined;
   comparisonProducts: Product[];
+  allManagers: Manager[];
   onRemoveComparisonSku: (id: string) => void;
+  onAssignManager: (skuId: string, managerId: string) => void;
+  onUnassignManager: (skuId: string) => void;
+  onUpdatePrice: (skuId: string, newPrice: number) => void;
 }
 
-export function ComparisonTable({ mainProduct, comparisonProducts, onRemoveComparisonSku }: ComparisonTableProps) {
+export function ComparisonTable({ 
+    mainProduct, 
+    comparisonProducts, 
+    allManagers,
+    onRemoveComparisonSku, 
+    onAssignManager, 
+    onUnassignManager, 
+    onUpdatePrice 
+}: ComparisonTableProps) {
   const filteredComparisonProducts = mainProduct
     ? comparisonProducts.filter((p) => p.id !== mainProduct.id)
     : comparisonProducts;
@@ -63,29 +76,44 @@ export function ComparisonTable({ mainProduct, comparisonProducts, onRemoveCompa
         <TableHeader>
           <TableRow className="bg-muted/50 hover:bg-muted/50">
             <TableHead className="w-[150px] font-semibold sticky left-0 z-20 bg-muted/50">Атрибут</TableHead>
-            {allProducts.map((product, index) => (
-              <TableHead 
-                key={product.id} 
-                className={cn(
-                  "min-w-[250px]",
-                   index === 0 && "sticky left-[150px] z-20 bg-muted/50"
-                )}
-              >
-                <div className="flex items-start gap-3">
-                  <Image src={product.imageUrl} alt={product.name} width={64} height={64} className="rounded-md" data-ai-hint="product image" />
-                  <div className="flex-grow">
-                    <p className="font-bold">{product.name}</p>
-                    <p className="text-sm text-muted-foreground">{product.id}</p>
+            {allProducts.map((product, index) => {
+               const manager = product.managerId ? allManagers.find(m => m.id === product.managerId) : null;
+               const availableManagers = allManagers.filter(m => m.shopId === product.shopId);
+
+               return (
+                <TableHead 
+                  key={product.id} 
+                  className={cn(
+                    "min-w-[250px]",
+                     index === 0 && "sticky left-[150px] z-20 bg-muted/50"
+                  )}
+                >
+                  <div className="flex items-start gap-3">
+                    <Image src={product.imageUrl} alt={product.name} width={64} height={64} className="rounded-md" data-ai-hint="product image" />
+                    <div className="flex-grow">
+                      <SkuInfoModal
+                        product={product}
+                        manager={manager}
+                        availableManagers={availableManagers}
+                        onAssignManager={onAssignManager}
+                        onUnassignManager={onUnassignManager}
+                        onUpdatePrice={onUpdatePrice}
+                        isCompetitor={product.shopId === 'competitor'}
+                      >
+                        <p className="font-bold hover:underline cursor-pointer">{product.name}</p>
+                      </SkuInfoModal>
+                      <p className="text-sm text-muted-foreground">{product.id}</p>
+                    </div>
+                     {product.id !== mainProduct?.id && (
+                       <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => onRemoveComparisonSku(product.id)}>
+                          <Trash2 className="h-4 w-4 text-muted-foreground"/>
+                          <span className="sr-only">Удалить из сравнения</span>
+                       </Button>
+                     )}
                   </div>
-                   {product.id !== mainProduct?.id && (
-                     <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => onRemoveComparisonSku(product.id)}>
-                        <Trash2 className="h-4 w-4 text-muted-foreground"/>
-                        <span className="sr-only">Удалить из сравнения</span>
-                     </Button>
-                   )}
-                </div>
-              </TableHead>
-            ))}
+                </TableHead>
+              )
+            })}
           </TableRow>
         </TableHeader>
         <TableBody>

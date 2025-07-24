@@ -6,7 +6,6 @@ import { SkuSidebar } from '@/components/app/sku-sidebar';
 import { PriceHistoryChart } from '@/components/app/price-history-chart';
 import { ComparisonSection } from '@/components/app/comparison-section';
 import { RecommendedActions } from '@/components/app/recommended-actions';
-import { SkuInfoCard } from '@/components/app/sku-info-card';
 import { allAvailableProducts as allAvailableProductsData, managedProducts as managedProductsData, managers as allManagers, shops } from '@/lib/mock-data';
 import type { Product, Manager, Shop } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
@@ -228,17 +227,6 @@ export default function Home() {
     });
   };
 
-  const managersForMainProduct = useMemo(() => {
-    if (!mainProduct) return [];
-    return allManagers.filter(m => m.shopId === mainProduct.shopId);
-  }, [mainProduct]);
-  
-  const mainProductManager = useMemo(() => {
-    if (!mainProduct || !mainProduct.managerId) return null;
-    return allManagers.find(m => m.id === mainProduct.managerId);
-  }, [mainProduct]);
-
-
   return (
     <SidebarProvider>
       <SkuSidebar
@@ -273,13 +261,9 @@ export default function Home() {
             <ComparisonSection 
               mainProduct={mainProduct} 
               comparisonProducts={comparisonProducts}
+              allManagers={allManagers}
               onAddComparisonSku={handleAddComparisonSku}
               onRemoveComparisonSku={handleRemoveComparisonSku}
-            />
-            <SkuInfoCard 
-              product={mainProduct}
-              manager={mainProductManager}
-              availableManagers={managersForMainProduct}
               onAssignManager={handleAssignManager}
               onUnassignManager={handleUnassignManager}
               onUpdatePrice={handleUpdatePrice}
