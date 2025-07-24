@@ -1,12 +1,28 @@
+
 import type { Product } from './types';
 
-function generatePriceHistory(basePrice: number, days: number): { date: string, price: number }[] {
+function generatePriceHistory(basePrice: number, days: number, sku: string): { date: string, price: number }[] {
   const history = [];
   let price = basePrice;
+
+  // Simple pseudo-random number generator based on SKU to keep it deterministic
+  const seededRandom = (seedStr: string) => {
+    let seed = 0;
+    for (let i = 0; i < seedStr.length; i++) {
+      seed = (seed + seedStr.charCodeAt(i)) % 10000;
+    }
+    return () => {
+      seed = (seed * 9301 + 49297) % 233280;
+      return seed / 233280;
+    };
+  };
+  
+  const random = seededRandom(sku);
+
   for (let i = days - 1; i >= 0; i--) {
     const date = new Date();
     date.setDate(date.getDate() - i);
-    price += (Math.random() - 0.5) * (basePrice * 0.05);
+    price += (random() - 0.5) * (basePrice * 0.05);
     if (i % 30 === 0 && i > 0) {
       price *= 0.9;
     }
@@ -31,7 +47,7 @@ export const managedProducts: Product[] = [
     rating: 4.7,
     reviews: 782341,
     features: ['Умная колонка', 'С поддержкой Alexa', 'Цвет древесного угля', 'Компактный дизайн'],
-    priceHistory: generatePriceHistory(49.99, 90),
+    priceHistory: generatePriceHistory(49.99, 90, 'B08H93ZRK9'),
   },
   {
     id: 'B08P2H5L7G',
@@ -41,7 +57,7 @@ export const managedProducts: Product[] = [
     rating: 4.6,
     reviews: 12543,
     features: ['Умный дисплей', 'Google Ассистент', 'Цвет «мел»', 'Анализ сна'],
-    priceHistory: generatePriceHistory(99.99, 90),
+    priceHistory: generatePriceHistory(99.99, 90, 'B08P2H5L7G'),
   },
 ];
 
@@ -56,7 +72,7 @@ export const allAvailableProducts: Product[] = [
     rating: 4.8,
     reviews: 45678,
     features: ['360-градусный звук', 'Интеграция с Siri', 'Цвет «серый космос»', 'Интерком'],
-    priceHistory: generatePriceHistory(99.00, 90),
+    priceHistory: generatePriceHistory(99.00, 90, 'B09J29QDP9'),
   },
   {
     id: 'B07Y2P3Y9W',
@@ -66,7 +82,7 @@ export const allAvailableProducts: Product[] = [
     rating: 4.7,
     reviews: 23456,
     features: ['Голосовое управление', 'Насыщенный звук', 'Влагостойкий', 'Apple AirPlay 2'],
-    priceHistory: generatePriceHistory(219.00, 90),
+    priceHistory: generatePriceHistory(219.00, 90, 'B07Y2P3Y9W'),
   },
     {
     id: 'B07XJ8C8F7',
@@ -76,7 +92,7 @@ export const allAvailableProducts: Product[] = [
     rating: 4.5,
     reviews: 15987,
     features: ['Стереозвук', 'Встроенный Alexa', 'ЖК-дисплей', 'Bluetooth'],
-    priceHistory: generatePriceHistory(299.00, 90),
+    priceHistory: generatePriceHistory(299.00, 90, 'B07XJ8C8F7'),
   },
   {
     id: 'B08F26C7R1',
@@ -86,6 +102,6 @@ export const allAvailableProducts: Product[] = [
     rating: 4.7,
     reviews: 32109,
     features: ['HD-дисплей', 'Движение', 'Alexa', 'Камера 13 Мп'],
-    priceHistory: generatePriceHistory(249.99, 90),
+    priceHistory: generatePriceHistory(249.99, 90, 'B08F26C7R1'),
   },
 ];
