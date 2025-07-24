@@ -23,9 +23,10 @@ interface AssignManagerDialogProps {
   managers: Manager[];
   currentManagerId?: string | null;
   onAssignManager: (managerId: string) => void;
+  onUnassignManager?: () => void;
 }
 
-export function AssignManagerDialog({ children, managers, currentManagerId, onAssignManager }: AssignManagerDialogProps) {
+export function AssignManagerDialog({ children, managers, currentManagerId, onAssignManager, onUnassignManager }: AssignManagerDialogProps) {
   const [open, setOpen] = useState(false);
   const [selectedManager, setSelectedManager] = useState(currentManagerId || (managers.length > 0 ? managers[0].id : ''));
   
@@ -36,8 +37,15 @@ export function AssignManagerDialog({ children, managers, currentManagerId, onAs
       setOpen(false);
     }
   };
+
+  const handleUnassign = () => {
+    if (onUnassignManager) {
+        onUnassignManager();
+        setOpen(false);
+    }
+  };
   
-  if (managers.length === 0) {
+  if (managers.length === 0 && !currentManagerId) {
     return null;
   }
 
@@ -48,7 +56,7 @@ export function AssignManagerDialog({ children, managers, currentManagerId, onAs
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Назначить менеджера</DialogTitle>
+          <DialogTitle>{currentManagerId ? "Изменить" : "Назначить"} менеджера</DialogTitle>
           <DialogDescription>
             Выберите менеджера из списка, чтобы привязать его к этому SKU.
           </DialogDescription>
@@ -59,7 +67,7 @@ export function AssignManagerDialog({ children, managers, currentManagerId, onAs
                     <Label htmlFor="manager" className="text-right">
                     Менеджер
                     </Label>
-                    <Select value={selectedManager} onValueChange={setSelectedManager}>
+                    <Select value={selectedManager} onValueChange={setSelectedManager} disabled={managers.length === 0}>
                         <SelectTrigger className="col-span-3">
                             <SelectValue placeholder="Выберите менеджера..." />
                         </SelectTrigger>
@@ -80,8 +88,13 @@ export function AssignManagerDialog({ children, managers, currentManagerId, onAs
                 </div>
             </div>
             <DialogFooter>
+                {currentManagerId && onUnassignManager && (
+                   <Button type="button" variant="destructive" onClick={handleUnassign} className="mr-auto">Отвязать</Button>
+                )}
                 <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Отмена</Button>
-                <Button type="submit">Назначить</Button>
+                <Button type="submit" disabled={!selectedManager || managers.length === 0}>
+                    {currentManagerId ? "Сохранить" : "Назначить"}
+                </Button>
             </DialogFooter>
         </form>
       </DialogContent>

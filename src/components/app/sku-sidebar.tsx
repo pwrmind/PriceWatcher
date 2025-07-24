@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Search, Trash2, Building, Users, Globe, Plus, UserPlus } from 'lucide-react';
+import { Search, Building, Users, Globe, Plus, UserPlus, Pencil } from 'lucide-react';
 import Image from 'next/image';
 import {
   Sidebar,
@@ -39,6 +39,7 @@ interface SkuSidebarProps {
   onAddSku: (id: string) => void;
   onDeleteSku: (id: string) => void;
   onAssignManager: (skuId: string, managerId: string) => void;
+  onUnassignManager: (skuId: string) => void;
   searchTerm: string;
   onSearchChange: (term: string) => void;
 }
@@ -56,6 +57,7 @@ export function SkuSidebar({
   onAddSku,
   onDeleteSku,
   onAssignManager,
+  onUnassignManager,
   searchTerm,
   onSearchChange,
 }: SkuSidebarProps) {
@@ -204,23 +206,24 @@ export function SkuSidebar({
                     </div>
                     </div>
                     <div className="flex items-center gap-2 ml-auto">
-                        {manager ? (
-                             <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Avatar className="w-6 h-6">
-                                        <AvatarImage src={manager?.avatarUrl} alt={manager?.name} />
-                                        <AvatarFallback>{manager?.name.charAt(0)}</AvatarFallback>
-                                    </Avatar>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>{manager?.name}</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        ) : (
-                           <AssignManagerDialog 
-                                managers={managersForProductShop}
-                                onAssignManager={(managerId) => onAssignManager(product.id, managerId)}
-                            >
+                        <AssignManagerDialog
+                            managers={managersForProductShop}
+                            currentManagerId={product.managerId}
+                            onAssignManager={(managerId) => onAssignManager(product.id, managerId)}
+                            onUnassignManager={() => onUnassignManager(product.id)}
+                        >
+                            {manager ? (
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-primary">
+                                            <Pencil className="h-4 w-4" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Изменить менеджера: {manager.name}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            ) : (
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                         <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-primary">
@@ -231,8 +234,8 @@ export function SkuSidebar({
                                         <p>Назначить менеджера</p>
                                     </TooltipContent>
                                 </Tooltip>
-                            </AssignManagerDialog>
-                        )}
+                            )}
+                        </AssignManagerDialog>
                        
                          <Tooltip>
                             <TooltipTrigger asChild>
@@ -245,16 +248,6 @@ export function SkuSidebar({
                             </TooltipContent>
                         </Tooltip>
                     </div>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive self-start" onClick={(e) => {e.stopPropagation(); onDeleteSku(product.id);}} aria-label="Удалить SKU">
-                                <Trash2 className="h-4 w-4" />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Удалить SKU</p>
-                        </TooltipContent>
-                    </Tooltip>
                 </div>
                 </SidebarMenuItem>
             )

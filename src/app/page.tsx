@@ -179,6 +179,15 @@ export default function Home() {
     });
   };
 
+  const handleUnassignManager = (skuId: string) => {
+    setTrackedSkus(prev => prev.map(p => p.id === skuId ? { ...p, managerId: null } : p));
+    toast({
+      title: 'Менеджер отвязан',
+      description: `Менеджер был успешно отвязан от SKU ${skuId}.`,
+      variant: 'default',
+    });
+  };
+
   const mainProduct = useMemo(() => trackedSkus.find(p => p.id === selectedSkuId), [trackedSkus, selectedSkuId]);
 
   return (
@@ -196,6 +205,7 @@ export default function Home() {
         onAddSku={handleAddTrackedSku}
         onDeleteSku={handleDeleteTrackedSku}
         onAssignManager={handleAssignManager}
+        onUnassignManager={handleUnassignManager}
         searchTerm={searchTerm}
         onSearchChange={handleSearchChange}
       />
