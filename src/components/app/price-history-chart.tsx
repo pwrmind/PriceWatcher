@@ -10,12 +10,11 @@ import { subDays, subMonths } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-type TimeRange = '7d' | '30d' | '6m' | '1y';
+type TimeRange = '7d' | '30d' | '1y';
 
 const timeRanges: { value: TimeRange, label: string }[] = [
-    { value: '7d', label: '7 дней' },
+    { value: '7d', label: 'Неделя' },
     { value: '30d', label: 'Месяц' },
-    { value: '6m', label: '6 месяцев' },
     { value: '1y', label: 'Год' },
 ];
 
@@ -41,9 +40,6 @@ export function PriceHistoryChart({ mainProduct, comparisonProducts }: PriceHist
             break;
         case '30d':
             startDate = subDays(now, 30);
-            break;
-        case '6m':
-            startDate = subMonths(now, 6);
             break;
         case '1y':
             startDate = subMonths(now, 12);
