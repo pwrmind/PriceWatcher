@@ -35,6 +35,8 @@ interface SkuSidebarProps {
   onSelectSku: (id: string) => void;
   onAddSku: (id: string) => void;
   onDeleteSku: (id: string) => void;
+  searchTerm: string;
+  onSearchChange: (term: string) => void;
 }
 
 export function SkuSidebar({
@@ -48,7 +50,9 @@ export function SkuSidebar({
   selectedSkuId,
   onSelectSku,
   onAddSku,
-  onDeleteSku
+  onDeleteSku,
+  searchTerm,
+  onSearchChange,
 }: SkuSidebarProps) {
 
   const handleAddSku = (event: React.FormEvent<HTMLFormElement>) => {
@@ -69,6 +73,15 @@ export function SkuSidebar({
       <SidebarHeader>
         <div className='px-2 space-y-2'>
             <h2 className="text-xl font-semibold">Ваши SKU</h2>
+            <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input 
+                    placeholder="Поиск по названию SKU..." 
+                    className="pl-9" 
+                    value={searchTerm}
+                    onChange={(e) => onSearchChange(e.target.value)}
+                />
+            </div>
             <Select value={selectedShopId} onValueChange={onShopChange}>
                 <SelectTrigger className="w-full">
                     <SelectValue>

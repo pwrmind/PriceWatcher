@@ -17,6 +17,7 @@ export default function Home() {
   
   const [trackedSkus, setTrackedSkus] = useState<Product[]>(managedProductsData);
   const [selectedShopId, setSelectedShopId] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const managersForSelectedShop = useMemo(() => {
     if (selectedShopId === 'all') {
@@ -35,12 +36,17 @@ export default function Home() {
   }, [trackedSkus, selectedShopId]);
   
   const managedProducts = useMemo(() => {
-    const baseProducts = productsForSelectedShop;
-    if (selectedManagerId === 'all') {
-      return baseProducts;
+    let baseProducts = productsForSelectedShop;
+    if (selectedManagerId !== 'all') {
+      baseProducts = baseProducts.filter(p => p.managerId === selectedManagerId)
     }
-    return baseProducts.filter(p => p.managerId === selectedManagerId)
-  }, [productsForSelectedShop, selectedManagerId]);
+    if (searchTerm) {
+      baseProducts = baseProducts.filter(p => 
+        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    return baseProducts;
+  }, [productsForSelectedShop, selectedManagerId, searchTerm]);
   
   const [selectedSkuId, setSelectedSkuId] = useState<string | null>(managedProducts[0]?.id || null);
   const [comparisonProducts, setComparisonProducts] = useState<Product[]>([]);
@@ -159,6 +165,10 @@ export default function Home() {
   const handleRemoveComparisonSku = (id: string) => {
     setComparisonProducts(prev => prev.filter(p => p.id !== id));
   };
+  
+  const handleSearchChange = (term: string) => {
+    setSearchTerm(term);
+  };
 
   const mainProduct = useMemo(() => trackedSkus.find(p => p.id === selectedSkuId), [trackedSkus, selectedSkuId]);
 
@@ -176,6 +186,8 @@ export default function Home() {
         onSelectSku={handleSelectSku}
         onAddSku={handleAddTrackedSku}
         onDeleteSku={handleDeleteTrackedSku}
+        searchTerm={searchTerm}
+        onSearchChange={handleSearchChange}
       />
       <SidebarInset>
         <main className="flex flex-col gap-8 p-4 md:p-8">
