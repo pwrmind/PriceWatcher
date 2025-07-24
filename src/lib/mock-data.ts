@@ -46,6 +46,8 @@ export const managers: Manager[] = [
   { id: 'manager-2', name: 'Петр Петров', avatarUrl: 'https://placehold.co/40x40.png', shopId: 'shop-1' },
   { id: 'manager-3', name: 'Мария Сидорова', avatarUrl: 'https://placehold.co/40x40.png', shopId: 'shop-2' },
   { id: 'manager-4', name: 'Игорь Васильев', avatarUrl: 'https://placehold.co/40x40.png', shopId: 'shop-2' },
+  { id: 'manager-5', name: 'Елена Смирнова', avatarUrl: 'https://placehold.co/40x40.png', shopId: 'shop-1' },
+  { id: 'manager-6', name: 'Дмитрий Кузнецов', avatarUrl: 'https://placehold.co/40x40.png', shopId: 'shop-2' },
 ];
 
 const allProductsData: Omit<Product, 'priceHistory' | 'shopId' | 'marketplace' | 'currentPrice' | 'competitorSkus'>[] = [
@@ -113,7 +115,7 @@ const allProductsData: Omit<Product, 'priceHistory' | 'shopId' | 'marketplace' |
     id: 'B08F26C7R1',
     name: 'Amazon Echo Show 10 (3rd Gen)',
     imageUrl: 'https://placehold.co/100x100.png',
-    managerId: null, // Unassigned
+    managerId: 'manager-5',
     rating: 4.7,
     reviews: 32109,
     features: ['HD-дисплей', 'Движение', 'Alexa', 'Камера 13 Мп'],
@@ -129,45 +131,78 @@ const allProductsData: Omit<Product, 'priceHistory' | 'shopId' | 'marketplace' |
     features: ['ANC', 'Hi-Res Wireless', 'Мониторинг ЧСС', 'Пространственный звук'],
     notifications: 3,
   },
+  {
+    id: 'B08L5C81X6',
+    name: 'Kindle Paperwhite (11th Gen)',
+    imageUrl: 'https://placehold.co/100x100.png',
+    managerId: 'manager-5',
+    rating: 4.8,
+    reviews: 150234,
+    features: ['Экран 6.8"', 'Регулируемая подсветка', 'Водонепроницаемый', 'Недели работы от батареи'],
+    notifications: 0,
+  },
+  {
+    id: 'B07VGRJDFY',
+    name: 'Fire TV Stick 4K Max',
+    imageUrl: 'https://placehold.co/100x100.png',
+    managerId: 'manager-1',
+    rating: 4.7,
+    reviews: 540987,
+    features: ['Wi-Fi 6', 'Dolby Vision', 'Alexa Voice Remote', '4K Ultra HD'],
+    notifications: 0,
+  },
+  {
+    id: 'B09G96W65H',
+    name: 'Apple AirPods (3rd Generation)',
+    imageUrl: 'https://placehold.co/100x100.png',
+    managerId: 'manager-6',
+    rating: 4.6,
+    reviews: 89012,
+    features: ['Spatial Audio', 'Adaptive EQ', 'Защита от пота и воды', 'Быстрое подключение'],
+    notifications: 1,
+  },
+  {
+    id: 'B08WF83B47',
+    name: 'Samsung Galaxy SmartTag+',
+    imageUrl: 'https://placehold.co/100x100.png',
+    managerId: null, // Unassigned
+    rating: 4.5,
+    reviews: 12345,
+    features: ['Bluetooth', 'AR Finding', 'UWB', 'Водостойкий'],
+    notifications: 0,
+  },
+  {
+    id: 'B08C4K3R22',
+    name: 'Roku Ultra 2020',
+    imageUrl: 'https://placehold.co/100x100.png',
+    managerId: 'manager-3',
+    rating: 4.7,
+    reviews: 23456,
+    features: ['4K/HDR/Dolby Vision', 'Bluetooth streaming', 'Ethernet port', 'Голосовой пульт'],
+    notifications: 4,
+  },
+  {
+    id: 'B09N3ZN55B',
+    name: 'JBL Flip 6',
+    imageUrl: 'https://placehold.co/100x100.png',
+    managerId: 'manager-4',
+    rating: 4.8,
+    reviews: 11223,
+    features: ['Водонепроницаемая', '12 часов работы', 'PartyBoost', 'Смелый дизайн'],
+    notifications: 0,
+  },
+  {
+    id: 'B09M6YQY34',
+    name: 'Logitech MX Master 3S',
+    imageUrl: 'https://placehold.co/100x100.png',
+    managerId: 'manager-6',
+    rating: 4.7,
+    reviews: 18901,
+    features: ['8K DPI сенсор', 'Тихие клики', 'MagSpeed скроллинг', 'Multi-device'],
+    notifications: 0,
+  },
 ];
 
-const basePrices: { [key: string]: number } = {
-  'B08H93ZRK9': 49.99,
-  'B08P2H5L7G': 99.99,
-  'B09B8V2T6C': 399.99,
-  'B09J29QDP9': 99.00,
-  'B07Y2P3Y9W': 219.00,
-  'B07XJ8C8F7': 299.00,
-  'B08F26C7R1': 249.99,
-  'B0C1J3V6P4': 129.99,
-  'COMP-GGL-NEST-A': 99.99,
-  'COMP-BOSE-QC-45': 329.00,
-  'COMP-ANKR-LBT-NC': 99.99,
-};
-
-const productMarketplaces: { [key: string]: { shopId: string, marketplace: string } } = {
-    'B08H93ZRK9': { shopId: 'shop-1', marketplace: 'Наш магазин' },
-    'B08P2H5L7G': { shopId: 'shop-1', marketplace: 'Наш магазин' },
-    'B09B8V2T6C': { shopId: 'shop-1', marketplace: 'Наш магазин' },
-    'B09J29QDP9': { shopId: 'shop-2', marketplace: 'Филиал "Север"' },
-    'B07Y2P3Y9W': { shopId: 'shop-1', marketplace: 'Наш магазин' },
-    'B07XJ8C8F7': { shopId: 'shop-2', marketplace: 'Филиал "Север"' },
-    'B08F26C7R1': { shopId: 'shop-1', marketplace: 'Наш магазин' },
-    'B0C1J3V6P4': { shopId: 'shop-2', marketplace: 'Филиал "Север"' },
-};
-
-const productCompetitors: { [key: string]: string[] } = {
-    'B08H93ZRK9': ['COMP-GGL-NEST-A'],
-    'B08P2H5L7G': ['COMP-GGL-NEST-A'],
-    'B09B8V2T6C': ['COMP-BOSE-QC-45'],
-    'B09J29QDP9': ['COMP-GGL-NEST-A'],
-    'B07Y2P3Y9W': ['COMP-GGL-NEST-A', 'COMP-BOSE-QC-45'],
-    'B07XJ8C8F7': ['COMP-BOSE-QC-45', 'COMP-GGL-NEST-A'],
-    'B08F26C7R1': ['COMP-GGL-NEST-A'],
-    'B0C1J3V6P4': ['COMP-ANKR-LBT-NC'],
-};
-
-// Add some competitor products that don't belong to any of our shops
 const competitorProducts: Omit<Product, 'priceHistory' | 'shopId' | 'managerId' | 'notifications' | 'currentPrice' | 'competitorSkus'>[] = [
     {
         id: 'COMP-GGL-NEST-A',
@@ -195,9 +230,117 @@ const competitorProducts: Omit<Product, 'priceHistory' | 'shopId' | 'managerId' 
         rating: 4.4,
         reviews: 5432,
         features: ['ANC', 'Hi-Res', 'Беспроводная зарядка'],
-    }
+    },
+    {
+        id: 'COMP-KOBO-LIBRA',
+        name: 'Kobo Libra 2',
+        imageUrl: 'https://placehold.co/100x100.png',
+        marketplace: 'Competitor A',
+        rating: 4.7,
+        reviews: 8912,
+        features: ['Экран 7"', 'Водонепроницаемый', 'ComfortLight PRO', 'Физические кнопки'],
+    },
+    {
+        id: 'COMP-SONY-XB910N',
+        name: 'Sony WH-XB910N',
+        imageUrl: 'https://placehold.co/100x100.png',
+        marketplace: 'Competitor B',
+        rating: 4.6,
+        reviews: 12094,
+        features: ['Шумоподавление', 'EXTRA BASS', '30 часов работы', 'Multipoint'],
+    },
+    {
+        id: 'COMP-BEATS-FIT-PRO',
+        name: 'Beats Fit Pro',
+        imageUrl: 'https://placehold.co/100x100.png',
+        marketplace: 'Competitor D',
+        rating: 4.5,
+        reviews: 21345,
+        features: ['ANC', 'Spatial Audio', 'Чип Apple H1', 'Надежная посадка'],
+    },
+    {
+        id: 'COMP-TILE-PRO',
+        name: 'Tile Pro (2022)',
+        imageUrl: 'https://placehold.co/100x100.png',
+        marketplace: 'Competitor C',
+        rating: 4.6,
+        reviews: 18765,
+        features: ['Bluetooth', 'Дальность 400 футов', 'Сменная батарея', 'Громкий звонок'],
+    },
+    {
+        id: 'COMP-UE-BOOM-3',
+        name: 'Ultimate Ears BOOM 3',
+        imageUrl: 'https://placehold.co/100x100.png',
+        marketplace: 'Competitor A',
+        rating: 4.7,
+        reviews: 35091,
+        features: ['360-градусный звук', 'Водонепроницаемая', '15 часов работы', 'Кнопка Magic'],
+    },
 ];
 
+const basePrices: { [key: string]: number } = {
+  'B08H93ZRK9': 49.99,
+  'B08P2H5L7G': 99.99,
+  'B09B8V2T6C': 399.99,
+  'B09J29QDP9': 99.00,
+  'B07Y2P3Y9W': 219.00,
+  'B07XJ8C8F7': 299.00,
+  'B08F26C7R1': 249.99,
+  'B0C1J3V6P4': 129.99,
+  'B08L5C81X6': 139.99,
+  'B07VGRJDFY': 54.99,
+  'B09G96W65H': 179.00,
+  'B08WF83B47': 34.99,
+  'B08C4K3R22': 99.99,
+  'B09N3ZN55B': 129.95,
+  'B09M6YQY34': 99.99,
+  'COMP-GGL-NEST-A': 99.99,
+  'COMP-BOSE-QC-45': 329.00,
+  'COMP-ANKR-LBT-NC': 99.99,
+  'COMP-KOBO-LIBRA': 169.99,
+  'COMP-SONY-XB910N': 249.99,
+  'COMP-BEATS-FIT-PRO': 199.99,
+  'COMP-TILE-PRO': 34.99,
+  'COMP-UE-BOOM-3': 149.99,
+};
+
+const productMarketplaces: { [key: string]: { shopId: string, marketplace: string } } = {
+    'B08H93ZRK9': { shopId: 'shop-1', marketplace: 'Наш магазин' },
+    'B08P2H5L7G': { shopId: 'shop-1', marketplace: 'Наш магазин' },
+    'B09B8V2T6C': { shopId: 'shop-1', marketplace: 'Наш магазин' },
+    'B09J29QDP9': { shopId: 'shop-2', marketplace: 'Филиал "Север"' },
+    'B07Y2P3Y9W': { shopId: 'shop-1', marketplace: 'Наш магазин' },
+    'B07XJ8C8F7': { shopId: 'shop-2', marketplace: 'Филиал "Север"' },
+    'B08F26C7R1': { shopId: 'shop-1', marketplace: 'Наш магазин' },
+    'B0C1J3V6P4': { shopId: 'shop-2', marketplace: 'Филиал "Север"' },
+    'B08L5C81X6': { shopId: 'shop-1', marketplace: 'Наш магазин' },
+    'B07VGRJDFY': { shopId: 'shop-1', marketplace: 'Наш магазин' },
+    'B09G96W65H': { shopId: 'shop-2', marketplace: 'Филиал "Север"' },
+    'B08WF83B47': { shopId: 'shop-1', marketplace: 'Наш магазин' },
+    'B08C4K3R22': { shopId: 'shop-2', marketplace: 'Филиал "Север"' },
+    'B09N3ZN55B': { shopId: 'shop-2', marketplace: 'Филиал "Север"' },
+    'B09M6YQY34': { shopId: 'shop-1', marketplace: 'Наш магазин' },
+};
+
+const productCompetitors: { [key: string]: string[] } = {
+    'B08H93ZRK9': ['COMP-GGL-NEST-A'],
+    'B08P2H5L7G': ['COMP-GGL-NEST-A'],
+    'B09B8V2T6C': ['COMP-BOSE-QC-45', 'COMP-SONY-XB910N'],
+    'B09J29QDP9': ['COMP-GGL-NEST-A'],
+    'B07Y2P3Y9W': ['COMP-GGL-NEST-A', 'COMP-UE-BOOM-3'],
+    'B07XJ8C8F7': ['COMP-GGL-NEST-A', 'COMP-UE-BOOM-3'],
+    'B08F26C7R1': ['COMP-GGL-NEST-A'],
+    'B0C1J3V6P4': ['COMP-ANKR-LBT-NC', 'COMP-BEATS-FIT-PRO'],
+    'B08L5C81X6': ['COMP-KOBO-LIBRA'],
+    'B07VGRJDFY': ['B08C4K3R22'],
+    'B09G96W65H': ['COMP-ANKR-LBT-NC', 'COMP-BEATS-FIT-PRO'],
+    'B08WF83B47': ['COMP-TILE-PRO'],
+    'B08C4K3R22': ['B07VGRJDFY'],
+    'B09N3ZN55B': ['COMP-UE-BOOM-3'],
+    'B09M6YQY34': [],
+};
+
+// Combine all product data into a single source of truth
 export const allAvailableProducts: Product[] = [
     ...allProductsData.map(p => {
         const marketInfo = productMarketplaces[p.id];
@@ -229,3 +372,5 @@ export const allAvailableProducts: Product[] = [
 ];
 
 export const managedProducts: Product[] = allAvailableProducts.filter(p => p.shopId !== 'competitor');
+
+    
