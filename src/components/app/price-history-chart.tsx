@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -82,7 +83,7 @@ export function PriceHistoryChart({ mainProduct, comparisonProducts }: PriceHist
 
   if (!mainProduct && comparisonProducts.length === 0) {
     return (
-        <Card className="w-full h-full">
+        <Card className="h-full">
             <CardHeader>
                 <CardTitle>История цен</CardTitle>
                 <CardDescription>Выберите продукт для просмотра истории его цен.</CardDescription>
