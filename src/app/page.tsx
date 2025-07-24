@@ -223,26 +223,21 @@ export default function Home() {
       />
       <SidebarInset>
         <main className="flex flex-col gap-8 p-4 md:p-8">
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-              <div className="xl:col-span-2 grid grid-cols-1 lg:grid-cols-5 gap-8">
-                <div className="lg:col-span-2">
-                  <SkuInfoCard 
-                    product={mainProduct}
-                    manager={mainProductManager}
-                    availableManagers={managersForMainProduct}
-                    onAssignManager={handleAssignManager}
-                    onUnassignManager={handleUnassignManager}
-                  />
-                </div>
-                <div className="lg:col-span-3">
-                  <PriceHistoryChart 
-                    mainProduct={mainProduct} 
-                    comparisonProducts={comparisonProducts}
-                  />
-                </div>
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+              <div className="lg:col-span-2">
+                <SkuInfoCard 
+                  product={mainProduct}
+                  manager={mainProductManager}
+                  availableManagers={managersForMainProduct}
+                  onAssignManager={handleAssignManager}
+                  onUnassignManager={handleUnassignManager}
+                />
               </div>
-              <div className="xl:col-span-1">
-                {mainProduct && <RecommendedActions mainProduct={mainProduct} comparisonProducts={comparisonProducts} />}
+              <div className="lg:col-span-3">
+                <PriceHistoryChart 
+                  mainProduct={mainProduct} 
+                  comparisonProducts={comparisonProducts}
+                />
               </div>
             </div>
             <ComparisonSection 
@@ -251,6 +246,12 @@ export default function Home() {
               onAddComparisonSku={handleAddComparisonSku}
               onRemoveComparisonSku={handleRemoveComparisonSku}
             />
+            {mainProduct && (
+              <RecommendedActions 
+                mainProduct={mainProduct} 
+                comparisonProducts={comparisonProducts} 
+              />
+            )}
         </main>
       </SidebarInset>
     </SidebarProvider>
