@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Search, Building, Users, Globe, Plus, UserPlus, Trash2 } from 'lucide-react';
+import { Search, Building, Users, Globe, Plus, UserPlus } from 'lucide-react';
 import Image from 'next/image';
 import {
   Sidebar,
@@ -145,7 +145,7 @@ export function SkuSidebar({
               onAddNewManager={onAddNewManager}
               shopId={selectedShopId}
             />
-            <Select value={selectedManagerId} onValueChange={handleManagerSelect} disabled={addManagerOpen}>
+            <Select value={selectedManagerId} onValueChange={handleManagerSelect} disabled={addManagerOpen || selectedShopId === 'all'}>
               <SelectTrigger className="w-full">
                 <SelectValue>
                     <div className="flex items-center gap-2">
@@ -299,16 +299,6 @@ export function SkuSidebar({
                             </TooltipTrigger>
                             <TooltipContent>
                                 <p>{shop?.name}</p>
-                            </TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); onDeleteSku(product.id)}}>
-                                    <Trash2 className="h-4 w-4"/>
-                                </Button>
-                            </TooltipTrigger>
-                             <TooltipContent>
-                                <p>Удалить SKU</p>
                             </TooltipContent>
                         </Tooltip>
                     </div>
