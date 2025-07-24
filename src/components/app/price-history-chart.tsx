@@ -53,7 +53,7 @@ export function PriceHistoryChart({ mainProduct, comparisonProducts }: PriceHist
                 <CardDescription>Выберите продукт для просмотра истории его цен.</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="h-[350px] w-full flex items-center justify-center bg-muted/10 rounded-lg border border-dashed">
+                <div className="h-[245px] w-full flex items-center justify-center bg-muted/10 rounded-lg border border-dashed">
                     <p className="text-muted-foreground">Продукт не выбран</p>
                 </div>
             </CardContent>
@@ -68,7 +68,7 @@ export function PriceHistoryChart({ mainProduct, comparisonProducts }: PriceHist
         <CardDescription>Колебания цен за последние 90 дней.</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[350px] w-full">
+        <ChartContainer config={chartConfig} className="h-[245px] w-full">
           <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => new Date(value).toLocaleDateString('ru-RU', { month: 'short', day: 'numeric' })} />
