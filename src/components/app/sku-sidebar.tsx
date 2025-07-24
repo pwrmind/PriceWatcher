@@ -167,14 +167,21 @@ export function SkuSidebar({
                 onClick={() => onSelectSku(product.id)}
                 >
                 <div className="flex items-center w-full gap-3 p-2">
-                    <Image
-                    src={product.imageUrl}
-                    alt={product.name}
-                    width={40}
-                    height={40}
-                    className="rounded-md shrink-0"
-                    data-ai-hint="product image"
-                    />
+                    <div className="relative shrink-0">
+                        <Image
+                        src={product.imageUrl}
+                        alt={product.name}
+                        width={40}
+                        height={40}
+                        className="rounded-md"
+                        data-ai-hint="product image"
+                        />
+                         {product.notifications > 0 && (
+                            <Badge variant="destructive" className="absolute -top-1 -left-1 h-5 w-5 p-0 flex items-center justify-center text-xs">
+                                {product.notifications}
+                            </Badge>
+                         )}
+                    </div>
                     <div className="flex-grow overflow-hidden">
                     <p className="font-semibold truncate text-sm">{product.name}</p>
                     <div className="flex items-center gap-2">
@@ -182,33 +189,28 @@ export function SkuSidebar({
                         <PricePrediction sku={product.id} priceHistory={product.priceHistory} />
                     </div>
                     </div>
-                    <div className="flex flex-col items-center gap-1 ml-auto">
-                        <div className="flex items-center gap-2">
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Avatar className="w-6 h-6">
-                                        <AvatarImage src={manager?.avatarUrl} alt={manager?.name} />
-                                        <AvatarFallback>{manager?.name.charAt(0)}</AvatarFallback>
-                                    </Avatar>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>{manager?.name}</p>
-                                </TooltipContent>
-                            </Tooltip>
-                             <Tooltip>
-                                <TooltipTrigger asChild>
-                                     <div className="flex items-center justify-center w-6 h-6 rounded-full bg-muted">
-                                        <Building className="w-4 h-4 text-muted-foreground" />
-                                     </div>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>{shop?.name}</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </div>
-                         {product.notifications > 0 && (
-                            <Badge variant="destructive" className="h-5 w-5 p-0 flex items-center justify-center text-xs self-center mt-1">{product.notifications}</Badge>
-                         )}
+                    <div className="flex items-center gap-2 ml-auto">
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Avatar className="w-6 h-6">
+                                    <AvatarImage src={manager?.avatarUrl} alt={manager?.name} />
+                                    <AvatarFallback>{manager?.name.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>{manager?.name}</p>
+                            </TooltipContent>
+                        </Tooltip>
+                         <Tooltip>
+                            <TooltipTrigger asChild>
+                                 <div className="flex items-center justify-center w-6 h-6 rounded-full bg-muted">
+                                    <Building className="w-4 h-4 text-muted-foreground" />
+                                 </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>{shop?.name}</p>
+                            </TooltipContent>
+                        </Tooltip>
                     </div>
                     <Tooltip>
                         <TooltipTrigger asChild>
