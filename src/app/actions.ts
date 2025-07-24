@@ -2,6 +2,8 @@
 
 import { predictPriceDrop } from '@/ai/flows/predict-price-drop';
 import type { PredictPriceDropInput } from '@/ai/flows/predict-price-drop';
+import { getRecommendedActions as getRecommendedActionsFlow } from '@/ai/flows/get-recommended-actions';
+import type { GetRecommendedActionsInput, RecommendedAction } from '@/ai/flows/get-recommended-actions';
 import type { PricePredictionType } from '@/lib/types';
 
 export async function getPriceDropPrediction(input: PredictPriceDropInput): Promise<PricePredictionType | { error: string }> {
@@ -12,4 +14,14 @@ export async function getPriceDropPrediction(input: PredictPriceDropInput): Prom
     console.error('Error fetching price drop prediction:', error);
     return { error: 'Не удалось получить прогноз цен. Пожалуйста, попробуйте позже.' };
   }
+}
+
+export async function getRecommendedActions(input: GetRecommendedActionsInput): Promise<RecommendedAction[] | { error: string }> {
+    try {
+        const actions = await getRecommendedActionsFlow(input);
+        return actions;
+    } catch (error) {
+        console.error('Error fetching recommended actions:', error);
+        return { error: 'Не удалось получить рекомендуемые действия. Пожалуйста, попробуйте позже.' };
+    }
 }

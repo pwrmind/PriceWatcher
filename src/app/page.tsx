@@ -5,6 +5,7 @@ import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { SkuSidebar } from '@/components/app/sku-sidebar';
 import { PriceHistoryChart } from '@/components/app/price-history-chart';
 import { ComparisonSection } from '@/components/app/comparison-section';
+import { RecommendedActions } from '@/components/app/recommended-actions';
 import { allAvailableProducts as allAvailableProductsData, managedProducts as managedProductsData, managers } from '@/lib/mock-data';
 import type { Product, Manager } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
@@ -135,6 +136,7 @@ export default function Home() {
       <SidebarInset>
         <main className="flex flex-col gap-8 p-4 md:p-8">
             <PriceHistoryChart mainProduct={mainProduct} comparisonProducts={comparisonProducts} />
+            {mainProduct && <RecommendedActions mainProduct={mainProduct} comparisonProducts={comparisonProducts} />}
             <ComparisonSection 
               mainProduct={mainProduct} 
               comparisonProducts={comparisonProducts}
