@@ -276,6 +276,42 @@ const competitorProducts: Omit<Product, 'priceHistory' | 'shopId' | 'managerId' 
         reviews: 35091,
         features: ['360-градусный звук', 'Водонепроницаемая', '15 часов работы', 'Кнопка Magic'],
     },
+    {
+        id: 'COMP-LOGI-MX-ANYWHERE-3',
+        name: 'Logitech MX Anywhere 3S',
+        imageUrl: 'https://placehold.co/100x100.png',
+        marketplace: 'Competitor B',
+        rating: 4.7,
+        reviews: 11234,
+        features: ['Компактная', '8K DPI', 'MagSpeed скроллинг', 'Multi-device'],
+    },
+    {
+        id: 'COMP-RAZER-DEATHADDER-V3',
+        name: 'Razer DeathAdder V3 Pro',
+        imageUrl: 'https://placehold.co/100x100.png',
+        marketplace: 'Competitor E',
+        rating: 4.8,
+        reviews: 9876,
+        features: ['Сверхлегкая', '30K DPI', 'Беспроводная HyperSpeed', 'Эргономичный дизайн'],
+    },
+    {
+        id: 'COMP-CHROMECAST-GTV',
+        name: 'Chromecast with Google TV 4K',
+        imageUrl: 'https://placehold.co/100x100.png',
+        marketplace: 'Competitor A',
+        rating: 4.7,
+        reviews: 123456,
+        features: ['4K HDR', 'Google TV', 'Голосовой пульт', 'Персональные рекомендации'],
+    },
+    {
+        id: 'COMP-NVIDIA-SHIELD-PRO',
+        name: 'NVIDIA SHIELD Android TV Pro',
+        imageUrl: 'https://placehold.co/100x100.png',
+        marketplace: 'Competitor E',
+        rating: 4.8,
+        reviews: 45678,
+        features: ['AI Upscaling', 'Dolby Vision/Atmos', 'GeForce NOW', 'Tegra X1+'],
+    },
 ];
 
 const basePrices: { [key: string]: number } = {
@@ -302,6 +338,10 @@ const basePrices: { [key: string]: number } = {
   'COMP-BEATS-FIT-PRO': 199.99,
   'COMP-TILE-PRO': 34.99,
   'COMP-UE-BOOM-3': 149.99,
+  'COMP-LOGI-MX-ANYWHERE-3': 79.99,
+  'COMP-RAZER-DEATHADDER-V3': 149.99,
+  'COMP-CHROMECAST-GTV': 49.99,
+  'COMP-NVIDIA-SHIELD-PRO': 199.99,
 };
 
 const productMarketplaces: { [key: string]: { shopId: string, marketplace: string } } = {
@@ -326,18 +366,18 @@ const productCompetitors: { [key: string]: string[] } = {
     'B08H93ZRK9': ['COMP-GGL-NEST-A'],
     'B08P2H5L7G': ['COMP-GGL-NEST-A'],
     'B09B8V2T6C': ['COMP-BOSE-QC-45', 'COMP-SONY-XB910N'],
-    'B09J29QDP9': ['COMP-GGL-NEST-A'],
-    'B07Y2P3Y9W': ['COMP-GGL-NEST-A', 'COMP-UE-BOOM-3'],
-    'B07XJ8C8F7': ['COMP-GGL-NEST-A', 'COMP-UE-BOOM-3'],
-    'B08F26C7R1': ['COMP-GGL-NEST-A'],
-    'B0C1J3V6P4': ['COMP-ANKR-LBT-NC', 'COMP-BEATS-FIT-PRO'],
+    'B09J29QDP9': ['COMP-GGL-NEST-A', 'B07Y2P3Y9W'],
+    'B07Y2P3Y9W': ['COMP-GGL-NEST-A', 'COMP-UE-BOOM-3', 'B07XJ8C8F7'],
+    'B07XJ8C8F7': ['COMP-GGL-NEST-A', 'COMP-UE-BOOM-3', 'B07Y2P3Y9W'],
+    'B08F26C7R1': ['COMP-GGL-NEST-A', 'B08P2H5L7G'],
+    'B0C1J3V6P4': ['COMP-ANKR-LBT-NC', 'COMP-BEATS-FIT-PRO', 'B09G96W65H'],
     'B08L5C81X6': ['COMP-KOBO-LIBRA'],
-    'B07VGRJDFY': ['B08C4K3R22'],
+    'B07VGRJDFY': ['B08C4K3R22', 'COMP-CHROMECAST-GTV'],
     'B09G96W65H': ['COMP-ANKR-LBT-NC', 'COMP-BEATS-FIT-PRO'],
     'B08WF83B47': ['COMP-TILE-PRO'],
-    'B08C4K3R22': ['B07VGRJDFY'],
+    'B08C4K3R22': ['B07VGRJDFY', 'COMP-CHROMECAST-GTV', 'COMP-NVIDIA-SHIELD-PRO'],
     'B09N3ZN55B': ['COMP-UE-BOOM-3'],
-    'B09M6YQY34': [],
+    'B09M6YQY34': ['COMP-LOGI-MX-ANYWHERE-3', 'COMP-RAZER-DEATHADDER-V3'],
 };
 
 // Combine all product data into a single source of truth
@@ -372,5 +412,7 @@ export const allAvailableProducts: Product[] = [
 ];
 
 export const managedProducts: Product[] = allAvailableProducts.filter(p => p.shopId !== 'competitor');
+
+    
 
     
