@@ -111,7 +111,7 @@ export function SkuSidebar({
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">
+                <SelectItem value="all">
                     <div className="flex items-center gap-2">
                         <Users className="w-5 h-5" />
                         <span>Все менеджеры</span>

@@ -20,12 +20,12 @@ export default function Home() {
 
   const managersForSelectedShop = useMemo(() => managers.filter(m => m.shopId === selectedShopId), [selectedShopId]);
   
-  const [selectedManagerId, setSelectedManagerId] = useState<string>('');
+  const [selectedManagerId, setSelectedManagerId] = useState<string>('all');
   
   const productsForSelectedShop = useMemo(() => trackedSkus.filter(p => p.shopId === selectedShopId), [trackedSkus, selectedShopId]);
   
   const managedProducts = useMemo(() => {
-    if (!selectedManagerId) {
+    if (selectedManagerId === 'all') {
       return productsForSelectedShop;
     }
     return productsForSelectedShop.filter(p => p.managerId === selectedManagerId)
@@ -36,7 +36,7 @@ export default function Home() {
 
   const handleShopChange = (shopId: string) => {
     setSelectedShopId(shopId);
-    setSelectedManagerId(''); // Reset manager filter
+    setSelectedManagerId('all'); // Reset manager filter
 
     const newShopProducts = trackedSkus.filter(p => p.shopId === shopId);
     setSelectedSkuId(newShopProducts[0]?.id || null);
@@ -48,7 +48,7 @@ export default function Home() {
   
   const handleManagerChange = (managerId: string) => {
     setSelectedManagerId(managerId);
-    const newManagerProducts = managerId ? productsForSelectedShop.filter(p => p.managerId === managerId) : productsForSelectedShop;
+    const newManagerProducts = managerId !== 'all' ? productsForSelectedShop.filter(p => p.managerId === managerId) : productsForSelectedShop;
     setSelectedSkuId(newManagerProducts[0]?.id || null);
   };
 
@@ -74,7 +74,7 @@ export default function Home() {
             return;
         }
         // When adding, we don't check manager if "All managers" is selected
-        if (selectedManagerId && productToAdd.managerId !== selectedManagerId) {
+        if (selectedManagerId !== 'all' && productToAdd.managerId !== selectedManagerId) {
              toast({
                 title: "Неверный менеджер",
                 description: `Этот SKU принадлежит другому менеджеру.`,
@@ -101,7 +101,7 @@ export default function Home() {
     setTrackedSkus(prods => {
       const remainingProducts = prods.filter(p => p.id !== id);
       if (selectedSkuId === id) {
-        const remainingManaged = selectedManagerId 
+        const remainingManaged = selectedManagerId !== 'all' 
           ? remainingProducts.filter(p => p.managerId === selectedManagerId && p.shopId === selectedShopId)
           : remainingProducts.filter(p => p.shopId === selectedShopId);
         setSelectedSkuId(remainingManaged[0]?.id || null);
