@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Search, Building, Users, Globe, Plus, UserPlus, Pencil } from 'lucide-react';
+import { Search, Building, Users, Globe, Plus, UserPlus } from 'lucide-react';
 import Image from 'next/image';
 import {
   Sidebar,
@@ -239,9 +239,11 @@ export function SkuSidebar({
                        
                          <Tooltip>
                             <TooltipTrigger asChild>
-                                 <div className="flex items-center justify-center w-6 h-6 rounded-full bg-muted">
-                                    <Building className="w-4 h-4 text-muted-foreground" />
-                                 </div>
+                                 <Avatar className="w-7 h-7">
+                                    <AvatarFallback className="bg-muted text-muted-foreground">
+                                        {shop ? shop.name.charAt(0) : '?'}
+                                    </AvatarFallback>
+                                 </Avatar>
                             </TooltipTrigger>
                             <TooltipContent>
                                 <p>{shop?.name}</p>
