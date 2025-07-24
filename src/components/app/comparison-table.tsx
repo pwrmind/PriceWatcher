@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -54,17 +55,17 @@ export function ComparisonTable({ mainProduct, comparisonProducts, onRemoveCompa
   };
 
   return (
-    <div className="overflow-x-auto relative border rounded-lg">
+    <div className="relative w-full overflow-auto border rounded-lg">
       <Table>
         <TableHeader>
-          <TableRow className="bg-muted/50">
-            <TableHead className="w-[150px] font-semibold sticky left-0 z-20 bg-card">Атрибут</TableHead>
+          <TableRow className="bg-muted/50 hover:bg-muted/50">
+            <TableHead className="w-[150px] font-semibold sticky left-0 z-20 bg-muted/50">Атрибут</TableHead>
             {allProducts.map((product, index) => (
               <TableHead 
                 key={product.id} 
                 className={cn(
                   "min-w-[250px]",
-                   index === 0 && "sticky left-[150px] z-20 bg-card"
+                   index === 0 && "sticky left-[150px] z-20 bg-muted/50"
                 )}
               >
                 <div className="flex items-start gap-3">
