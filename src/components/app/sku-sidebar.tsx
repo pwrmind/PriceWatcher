@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Search, Building, Users, Globe, Plus, UserPlus, LogOut } from 'lucide-react';
+import { Search, Building, Users, Globe, Plus, UserPlus, LogOut, User, Settings } from 'lucide-react';
 import Image from 'next/image';
 import {
   Sidebar,
@@ -27,6 +27,7 @@ import { AssignManagerDialog } from './assign-manager-dialog';
 import { useState } from 'react';
 import { AddShopDialog } from './add-shop-dialog';
 import { AddManagerDialog } from './add-manager-dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 
 interface SkuSidebarProps {
@@ -314,26 +315,38 @@ export function SkuSidebar({
       </SidebarContent>
       <Separator/>
       <SidebarFooter>
-        <div className="flex items-center gap-3 p-2">
-            <Avatar className="w-9 h-9">
-                <AvatarImage src="https://placehold.co/40x40.png" alt="User" />
-                <AvatarFallback>U</AvatarFallback>
-            </Avatar>
-            <div className="flex-grow overflow-hidden">
-                <p className="font-semibold truncate text-sm">Текущий пользователь</p>
-                <p className="text-xs text-muted-foreground truncate">user@example.com</p>
-            </div>
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <LogOut className="h-4 w-4" />
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                    <p>Выйти</p>
-                </TooltipContent>
-            </Tooltip>
-        </div>
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <div className="flex items-center gap-3 p-2 cursor-pointer hover:bg-sidebar-accent rounded-md">
+                    <Avatar className="w-9 h-9">
+                        <AvatarImage src="https://placehold.co/40x40.png" alt="User" />
+                        <AvatarFallback>U</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-grow overflow-hidden">
+                        <p className="font-semibold truncate text-sm">Текущий пользователь</p>
+                        <p className="text-xs text-muted-foreground truncate">user@example.com</p>
+                    </div>
+                </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56 mb-2" side="top" align="start">
+                 <DropdownMenuLabel>Мой аккаунт</DropdownMenuLabel>
+                 <DropdownMenuSeparator />
+                 <DropdownMenuItem>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Профиль</span>
+                 </DropdownMenuItem>
+                 <DropdownMenuItem>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Настройки</span>
+                 </DropdownMenuItem>
+                 <DropdownMenuSeparator />
+                 <DropdownMenuItem>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Выход</span>
+                 </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+
         <Separator />
         <div className="flex-row items-center justify-between px-2 flex">
             <p className="text-xs text-muted-foreground text-center">
