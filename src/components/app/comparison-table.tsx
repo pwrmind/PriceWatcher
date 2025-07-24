@@ -9,6 +9,8 @@ import { Star, Trash2 } from 'lucide-react';
 import type { Product, Manager } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { SkuInfoModal } from './sku-info-modal';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
 
 interface ComparisonTableProps {
   mainProduct: Product | undefined;
@@ -70,6 +72,14 @@ export function ComparisonTable({
         ({isPositive ? '+' : ''}{difference.toFixed(2)})
       </span>
     );
+  };
+  
+  const formatDate = (dateString: string) => {
+    try {
+      return format(new Date(dateString), 'dd MMM yyyy', { locale: ru });
+    } catch (e) {
+      return 'N/A';
+    }
   };
 
   return (
@@ -148,6 +158,17 @@ export function ComparisonTable({
             {allProducts.map((product, index) => (
               <TableCell key={product.id} className={cn(index === 0 && "sticky left-[150px] z-10 bg-card")}>{product.reviews.toLocaleString()}</TableCell>
             ))}
+          </TableRow>
+          <TableRow>
+            <TableCell className="font-semibold sticky left-0 z-10 bg-card">Дата обновления</TableCell>
+            {allProducts.map((product, index) => {
+              const lastUpdate = product.priceHistory.slice(-1)[0]?.date;
+              return (
+                <TableCell key={product.id} className={cn("text-sm text-muted-foreground", index === 0 && "sticky left-[150px] z-10 bg-card")}>
+                  {lastUpdate ? formatDate(lastUpdate) : 'N/A'}
+                </TableCell>
+              )
+            })}
           </TableRow>
           <TableRow>
             <TableCell className="font-semibold align-top sticky left-0 z-10 bg-card">Особенности</TableCell>
