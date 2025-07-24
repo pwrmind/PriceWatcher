@@ -10,20 +10,19 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UserPlus } from 'lucide-react';
 
 interface AddManagerDialogProps {
-  children: React.ReactNode;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   shopId: string;
   onAddNewManager: (name: string, shopId: string) => void;
 }
 
-export function AddManagerDialog({ children, shopId, onAddNewManager }: AddManagerDialogProps) {
-  const [open, setOpen] = useState(false);
+export function AddManagerDialog({ open, onOpenChange, shopId, onAddNewManager }: AddManagerDialogProps) {
   
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -31,15 +30,12 @@ export function AddManagerDialog({ children, shopId, onAddNewManager }: AddManag
     const name = formData.get('name') as string;
     if (name) {
       onAddNewManager(name.trim(), shopId);
-      setOpen(false);
+      onOpenChange(false);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {children}
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Добавить нового менеджера</DialogTitle>
@@ -60,7 +56,7 @@ export function AddManagerDialog({ children, shopId, onAddNewManager }: AddManag
                 </div>
             </div>
             <DialogFooter>
-                <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Отмена</Button>
+                <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Отмена</Button>
                 <Button type="submit">Добавить менеджера</Button>
             </DialogFooter>
         </form>

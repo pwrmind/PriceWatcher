@@ -139,66 +139,64 @@ export function SkuSidebar({
                 </SelectContent>
             </Select>
             
-
             <AddManagerDialog 
               open={addManagerOpen} 
               onOpenChange={setAddManagerOpen} 
               onAddNewManager={onAddNewManager}
               shopId={selectedShopId}
-            >
-              <Select value={selectedManagerId} onValueChange={handleManagerSelect} disabled={addManagerOpen}>
-                <SelectTrigger className="w-full">
-                  <SelectValue>
-                      <div className="flex items-center gap-2">
-                          {selectedManager ? (
-                              <>
-                                  <Avatar className="w-6 h-6">
-                                      <AvatarImage src={selectedManager?.avatarUrl} alt={selectedManager?.name} />
-                                      <AvatarFallback>{selectedManager?.name.charAt(0)}</AvatarFallback>
-                                  </Avatar>
-                                  <span>{selectedManager?.name}</span>
-                              </>
-                          ) : (
-                              <>
-                                  <Users className="w-5 h-5" />
-                                  <span>Все менеджеры</span>
-                              </>
-                          )}
-                      </div>
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">
-                      <div className="flex items-center gap-2">
-                          <Users className="w-5 h-5" />
-                          <span>Все менеджеры</span>
-                      </div>
+            />
+            <Select value={selectedManagerId} onValueChange={handleManagerSelect} disabled={addManagerOpen}>
+              <SelectTrigger className="w-full">
+                <SelectValue>
+                    <div className="flex items-center gap-2">
+                        {selectedManager ? (
+                            <>
+                                <Avatar className="w-6 h-6">
+                                    <AvatarImage src={selectedManager?.avatarUrl} alt={selectedManager?.name} />
+                                    <AvatarFallback>{selectedManager?.name.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                                <span>{selectedManager?.name}</span>
+                            </>
+                        ) : (
+                            <>
+                                <Users className="w-5 h-5" />
+                                <span>Все менеджеры</span>
+                            </>
+                        )}
+                    </div>
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">
+                    <div className="flex items-center gap-2">
+                        <Users className="w-5 h-5" />
+                        <span>Все менеджеры</span>
+                    </div>
+                </SelectItem>
+                {managers.map(manager => (
+                  <SelectItem key={manager.id} value={manager.id}>
+                    <div className="flex items-center gap-2">
+                        <Avatar className="w-6 h-6">
+                            <AvatarImage src={manager.avatarUrl} alt={manager.name} />
+                            <AvatarFallback>{manager.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <span>{manager.name}</span>
+                    </div>
                   </SelectItem>
-                  {managers.map(manager => (
-                    <SelectItem key={manager.id} value={manager.id}>
+                ))}
+                {selectedShopId !== 'all' && (
+                  <>
+                    <SelectSeparator />
+                    <SelectItem value="add-new-manager" className="text-primary focus:text-primary">
                       <div className="flex items-center gap-2">
-                          <Avatar className="w-6 h-6">
-                              <AvatarImage src={manager.avatarUrl} alt={manager.name} />
-                              <AvatarFallback>{manager.name.charAt(0)}</AvatarFallback>
-                          </Avatar>
-                          <span>{manager.name}</span>
+                          <Plus className="w-5 h-5" />
+                          <span>Добавить менеджера</span>
                       </div>
                     </SelectItem>
-                  ))}
-                  {selectedShopId !== 'all' && (
-                    <>
-                      <SelectSeparator />
-                      <SelectItem value="add-new-manager" className="text-primary focus:text-primary">
-                        <div className="flex items-center gap-2">
-                            <Plus className="w-5 h-5" />
-                            <span>Добавить менеджера</span>
-                        </div>
-                      </SelectItem>
-                    </>
-                  )}
-                </SelectContent>
-              </Select>
-            </AddManagerDialog>
+                  </>
+                )}
+              </SelectContent>
+            </Select>
 
             <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
