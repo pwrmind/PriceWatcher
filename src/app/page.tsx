@@ -10,6 +10,7 @@ import { SkuInfoCard } from '@/components/app/sku-info-card';
 import { allAvailableProducts as allAvailableProductsData, managedProducts as managedProductsData, managers as allManagers, shops } from '@/lib/mock-data';
 import type { Product, Manager, Shop } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
+import { PositionHistoryChart } from '@/components/app/position-history-chart';
 
 export default function Home() {
   const { toast } = useToast();
@@ -270,9 +271,13 @@ export default function Home() {
                   onUpdatePrice={handleUpdatePrice}
                 />
               </div>
-              <div className="lg:col-span-3">
+              <div className="lg:col-span-3 flex flex-col gap-8">
                 <PriceHistoryChart 
                   mainProduct={mainProduct} 
+                  comparisonProducts={comparisonProducts}
+                />
+                <PositionHistoryChart 
+                  mainProduct={mainProduct}
                   comparisonProducts={comparisonProducts}
                 />
               </div>

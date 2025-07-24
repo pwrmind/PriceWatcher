@@ -1,5 +1,5 @@
 
-import type { Product, Manager, Shop } from './types';
+import type { Product, Manager, Shop, PriceData, PositionData } from './types';
 
 // Deterministic pseudo-random number generator
 const seededRandom = (seedStr: string) => {
@@ -13,10 +13,10 @@ const seededRandom = (seedStr: string) => {
   };
 };
 
-function generatePriceHistory(basePrice: number, days: number, sku: string): { date: string, price: number }[] {
+function generatePriceHistory(basePrice: number, days: number, sku: string): PriceData[] {
   const history = [];
   let price = basePrice;
-  const random = seededRandom(sku);
+  const random = seededRandom(sku + 'price');
 
   for (let i = days - 1; i >= 0; i--) {
     const date = new Date();
@@ -36,6 +36,38 @@ function generatePriceHistory(basePrice: number, days: number, sku: string): { d
   return history;
 }
 
+function generatePositionHistory(basePosition: number, days: number, sku: string): PositionData[] {
+    const history: PositionData[] = [];
+    let position = basePosition;
+    const random = seededRandom(sku + 'position');
+
+    for (let i = days - 1; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        // Fluctuate position, tending to improve (lower number) over time slightly
+        const fluctuation = Math.round((random() - 0.48) * 5); 
+        position += fluctuation;
+
+        // Simulate a marketing campaign boost
+        if (i % 90 < 14 && days > 100) { 
+            position -= Math.round(random() * 3);
+        }
+
+        // Simulate competitor actions or algorithm changes
+        if (i % 45 === 0 && random() > 0.7) {
+            position += Math.round(random() * 5);
+        }
+
+        position = Math.max(1, Math.min(100, position)); // Keep position between 1 and 100
+
+        history.push({
+            date: date.toISOString().split('T')[0],
+            position: position,
+        });
+    }
+    return history;
+}
+
 export const shops: Shop[] = [
   { id: 'shop-1', name: 'Основной магазин' },
   { id: 'shop-2', name: 'Филиал "Север"' },
@@ -50,7 +82,7 @@ export const managers: Manager[] = [
   { id: 'manager-6', name: 'Дмитрий Кузнецов', avatarUrl: 'https://placehold.co/40x40.png', shopId: 'shop-2' },
 ];
 
-const allProductsData: Omit<Product, 'priceHistory' | 'shopId' | 'marketplace' | 'currentPrice' | 'competitorSkus'>[] = [
+const allProductsData: Omit<Product, 'priceHistory' | 'positionHistory' | 'shopId' | 'marketplace' | 'currentPrice' | 'competitorSkus'>[] = [
   {
     id: 'B08H93ZRK9',
     name: 'Echo Dot (4-го поколения)',
@@ -203,7 +235,7 @@ const allProductsData: Omit<Product, 'priceHistory' | 'shopId' | 'marketplace' |
   },
 ];
 
-const competitorProducts: Omit<Product, 'priceHistory' | 'shopId' | 'managerId' | 'notifications' | 'currentPrice' | 'competitorSkus'>[] = [
+const competitorProducts: Omit<Product, 'priceHistory' | 'positionHistory' | 'shopId' | 'managerId' | 'notifications' | 'currentPrice' | 'competitorSkus'>[] = [
     {
         id: 'COMP-GGL-NEST-A',
         name: 'Google Nest Audio',
@@ -344,6 +376,36 @@ const basePrices: { [key: string]: number } = {
   'COMP-NVIDIA-SHIELD-PRO': 199.99,
 };
 
+const basePositions: { [key: string]: number } = {
+  'B08H93ZRK9': 5,
+  'B08P2H5L7G': 12,
+  'B09B8V2T6C': 3,
+  'B09J29QDP9': 8,
+  'B07Y2P3Y9W': 15,
+  'B07XJ8C8F7': 25,
+  'B08F26C7R1': 10,
+  'B0C1J3V6P4': 30,
+  'B08L5C81X6': 7,
+  'B07VGRJDFY': 2,
+  'B09G96W65H': 18,
+  'B08WF83B47': 40,
+  'B08C4K3R22': 22,
+  'B09N3ZN55B': 17,
+  'B09M6YQY34': 9,
+  'COMP-GGL-NEST-A': 11,
+  'COMP-BOSE-QC-45': 4,
+  'COMP-ANKR-LBT-NC': 35,
+  'COMP-KOBO-LIBRA': 9,
+  'COMP-SONY-XB910N': 8,
+  'COMP-BEATS-FIT-PRO': 20,
+  'COMP-TILE-PRO': 38,
+  'COMP-UE-BOOM-3': 16,
+  'COMP-LOGI-MX-ANYWHERE-3': 14,
+  'COMP-RAZER-DEATHADDER-V3': 11,
+  'COMP-CHROMECAST-GTV': 4,
+  'COMP-NVIDIA-SHIELD-PRO': 28,
+};
+
 const productMarketplaces: { [key: string]: { shopId: string, marketplace: string } } = {
     'B08H93ZRK9': { shopId: 'shop-1', marketplace: 'Наш магазин' },
     'B08P2H5L7G': { shopId: 'shop-1', marketplace: 'Наш магазин' },
@@ -363,10 +425,10 @@ const productMarketplaces: { [key: string]: { shopId: string, marketplace: strin
 };
 
 const productCompetitors: { [key: string]: string[] } = {
-    'B08H93ZRK9': ['COMP-GGL-NEST-A'],
-    'B08P2H5L7G': ['COMP-GGL-NEST-A'],
+    'B08H93ZRK9': ['COMP-GGL-NEST-A', 'B09J29QDP9'],
+    'B08P2H5L7G': ['COMP-GGL-NEST-A', 'B08F26C7R1'],
     'B09B8V2T6C': ['COMP-BOSE-QC-45', 'COMP-SONY-XB910N'],
-    'B09J29QDP9': ['COMP-GGL-NEST-A', 'B07Y2P3Y9W'],
+    'B09J29QDP9': ['COMP-GGL-NEST-A', 'B07Y2P3Y9W', 'B08H93ZRK9'],
     'B07Y2P3Y9W': ['COMP-GGL-NEST-A', 'COMP-UE-BOOM-3', 'B07XJ8C8F7'],
     'B07XJ8C8F7': ['COMP-GGL-NEST-A', 'COMP-UE-BOOM-3', 'B07Y2P3Y9W'],
     'B08F26C7R1': ['COMP-GGL-NEST-A', 'B08P2H5L7G'],
@@ -385,18 +447,21 @@ export const allAvailableProducts: Product[] = [
     ...allProductsData.map(p => {
         const marketInfo = productMarketplaces[p.id];
         const priceHistory = generatePriceHistory(basePrices[p.id] || 100, 365, p.id);
+        const positionHistory = generatePositionHistory(basePositions[p.id] || 50, 365, p.id);
         const currentPrice = priceHistory[priceHistory.length - 1].price;
         return {
             ...p,
             shopId: marketInfo.shopId,
             marketplace: marketInfo.marketplace,
             priceHistory,
+            positionHistory,
             currentPrice,
             competitorSkus: productCompetitors[p.id] || [],
         }
     }),
     ...competitorProducts.map(p => {
         const priceHistory = generatePriceHistory((basePrices[p.id] || 150) * 1.1, 365, p.id);
+        const positionHistory = generatePositionHistory((basePositions[p.id] || 60), 365, p.id);
         const currentPrice = priceHistory[priceHistory.length - 1].price;
         return {
             ...p,
@@ -405,6 +470,7 @@ export const allAvailableProducts: Product[] = [
             managerId: null,
             notifications: 0,
             priceHistory,
+            positionHistory,
             currentPrice,
             competitorSkus: [],
         }
