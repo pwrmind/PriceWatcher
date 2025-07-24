@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Search, Building, Users, Globe, Plus, UserPlus } from 'lucide-react';
+import { Search, Building, Users, Globe, Plus, UserPlus, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import {
   Sidebar,
@@ -19,11 +19,14 @@ import { cn } from '@/lib/utils';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Input } from '@/components/ui/input';
 import { ThemeToggle } from './theme-toggle';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectSeparator } from '@/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { AddSkuDialog } from './add-sku-dialog';
 import { AssignManagerDialog } from './assign-manager-dialog';
+import { useState } from 'react';
+import { AddShopDialog } from './add-shop-dialog';
+import { AddManagerDialog } from './add-manager-dialog';
 
 
 interface SkuSidebarProps {
@@ -31,9 +34,11 @@ interface SkuSidebarProps {
   shops: Shop[];
   selectedShopId: string;
   onShopChange: (id: string) => void;
+  onAddNewShop: (name: string) => void;
   managers: Manager[];
   selectedManagerId: string;
   onManagerChange: (id: string) => void;
+  onAddNewManager: (name: string, shopId: string) => void;
   selectedSkuId: string | null;
   onSelectSku: (id: string) => void;
   onAddSku: (id: string) => void;
@@ -49,9 +54,11 @@ export function SkuSidebar({
   shops,
   selectedShopId,
   onShopChange,
+  onAddNewShop,
   managers,
   selectedManagerId,
   onManagerChange,
+  onAddNewManager,
   selectedSkuId,
   onSelectSku,
   onAddSku,
@@ -62,90 +69,137 @@ export function SkuSidebar({
   onSearchChange,
 }: SkuSidebarProps) {
   
+  const [addShopOpen, setAddShopOpen] = useState(false);
+  const [addManagerOpen, setAddManagerOpen] = useState(false);
+
   const selectedManager = managers.find(m => m.id === selectedManagerId);
   const selectedShop = shops.find(s => s.id === selectedShopId);
+
+  const handleShopSelect = (value: string) => {
+    if (value === 'add-new-shop') {
+      setAddShopOpen(true);
+    } else {
+      onShopChange(value);
+    }
+  };
+
+  const handleManagerSelect = (value: string) => {
+    if (value === 'add-new-manager') {
+      setAddManagerOpen(true);
+    } else {
+      onManagerChange(value);
+    }
+  };
 
   return (
     <Sidebar>
       <SidebarHeader>
         <div className='px-2 space-y-2'>
-            <Select value={selectedShopId} onValueChange={onShopChange}>
-                <SelectTrigger className="w-full">
-                    <SelectValue>
-                        <div className="flex items-center gap-2">
-                           {selectedShop ? (
-                              <>
-                                <Building className="w-5 h-5" />
-                                <span>{selectedShop.name}</span>
-                              </>
-                            ) : (
-                              <>
-                                <Globe className="w-5 h-5" />
-                                <span>Все магазины</span>
-                              </>
-                            )}
+            <AddShopDialog open={addShopOpen} onOpenChange={setAddShopOpen} onAddNewShop={onAddNewShop}>
+              <Select value={selectedShopId} onValueChange={handleShopSelect}>
+                  <SelectTrigger className="w-full">
+                      <SelectValue>
+                          <div className="flex items-center gap-2">
+                            {selectedShop ? (
+                                <>
+                                  <Building className="w-5 h-5" />
+                                  <span>{selectedShop.name}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Globe className="w-5 h-5" />
+                                  <span>Все магазины</span>
+                                </>
+                              )}
+                          </div>
+                      </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="all">
+                          <div className="flex items-center gap-2">
+                              <Globe className="w-5 h-5" />
+                              <span>Все магазины</span>
+                          </div>
+                      </SelectItem>
+                      {shops.map(shop => (
+                          <SelectItem key={shop.id} value={shop.id}>
+                              <div className="flex items-center gap-2">
+                                  <Building className="w-5 h-5" />
+                                  <span>{shop.name}</span>
+                              </div>
+                          </SelectItem>
+                      ))}
+                      <SelectSeparator />
+                      <SelectItem value="add-new-shop" className="text-primary focus:text-primary">
+                         <div className="flex items-center gap-2">
+                            <Plus className="w-5 h-5" />
+                            <span>Добавить магазин</span>
                         </div>
-                    </SelectValue>
+                      </SelectItem>
+                  </SelectContent>
+              </Select>
+            </AddShopDialog>
+
+            <AddManagerDialog 
+              open={addManagerOpen} 
+              onOpenChange={setAddManagerOpen} 
+              onAddNewManager={onAddNewManager}
+              shopId={selectedShopId}
+            >
+              <Select value={selectedManagerId} onValueChange={handleManagerSelect} disabled={addManagerOpen}>
+                <SelectTrigger className="w-full">
+                  <SelectValue>
+                      <div className="flex items-center gap-2">
+                          {selectedManager ? (
+                              <>
+                                  <Avatar className="w-6 h-6">
+                                      <AvatarImage src={selectedManager?.avatarUrl} alt={selectedManager?.name} />
+                                      <AvatarFallback>{selectedManager?.name.charAt(0)}</AvatarFallback>
+                                  </Avatar>
+                                  <span>{selectedManager?.name}</span>
+                              </>
+                          ) : (
+                              <>
+                                  <Users className="w-5 h-5" />
+                                  <span>Все менеджеры</span>
+                              </>
+                          )}
+                      </div>
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="all">
-                        <div className="flex items-center gap-2">
-                            <Globe className="w-5 h-5" />
-                            <span>Все магазины</span>
-                        </div>
-                    </SelectItem>
-                    {shops.map(shop => (
-                        <SelectItem key={shop.id} value={shop.id}>
-                            <div className="flex items-center gap-2">
-                                <Building className="w-5 h-5" />
-                                <span>{shop.name}</span>
-                            </div>
-                        </SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
-
-            <Select value={selectedManagerId} onValueChange={onManagerChange}>
-              <SelectTrigger className="w-full">
-                <SelectValue>
-                    <div className="flex items-center gap-2">
-                         {selectedManager ? (
-                            <>
-                                <Avatar className="w-6 h-6">
-                                    <AvatarImage src={selectedManager?.avatarUrl} alt={selectedManager?.name} />
-                                    <AvatarFallback>{selectedManager?.name.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <span>{selectedManager?.name}</span>
-                            </>
-                         ) : (
-                            <>
-                                <Users className="w-5 h-5" />
-                                <span>Все менеджеры</span>
-                            </>
-                         )}
-                    </div>
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">
-                    <div className="flex items-center gap-2">
-                        <Users className="w-5 h-5" />
-                        <span>Все менеджеры</span>
-                    </div>
-                </SelectItem>
-                {managers.map(manager => (
-                  <SelectItem key={manager.id} value={manager.id}>
-                    <div className="flex items-center gap-2">
-                        <Avatar className="w-6 h-6">
-                            <AvatarImage src={manager.avatarUrl} alt={manager.name} />
-                            <AvatarFallback>{manager.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <span>{manager.name}</span>
-                    </div>
+                  <SelectItem value="all">
+                      <div className="flex items-center gap-2">
+                          <Users className="w-5 h-5" />
+                          <span>Все менеджеры</span>
+                      </div>
                   </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                  {managers.map(manager => (
+                    <SelectItem key={manager.id} value={manager.id}>
+                      <div className="flex items-center gap-2">
+                          <Avatar className="w-6 h-6">
+                              <AvatarImage src={manager.avatarUrl} alt={manager.name} />
+                              <AvatarFallback>{manager.name.charAt(0)}</AvatarFallback>
+                          </Avatar>
+                          <span>{manager.name}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                  {selectedShopId !== 'all' && (
+                    <>
+                      <SelectSeparator />
+                      <SelectItem value="add-new-manager" className="text-primary focus:text-primary">
+                        <div className="flex items-center gap-2">
+                            <Plus className="w-5 h-5" />
+                            <span>Добавить менеджера</span>
+                        </div>
+                      </SelectItem>
+                    </>
+                  )}
+                </SelectContent>
+              </Select>
+            </AddManagerDialog>
+
             <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input 
@@ -176,7 +230,7 @@ export function SkuSidebar({
             return (
                 <SidebarMenuItem key={product.id} 
                 className={cn(
-                    "rounded-lg transition-colors cursor-pointer hover:bg-sidebar-accent h-auto",
+                    "rounded-lg transition-colors group cursor-pointer hover:bg-sidebar-accent h-auto",
                     selectedSkuId === product.id && 'bg-sidebar-accent ring-2 ring-primary'
                 )}
                 onClick={() => onSelectSku(product.id)}
@@ -247,6 +301,16 @@ export function SkuSidebar({
                             </TooltipTrigger>
                             <TooltipContent>
                                 <p>{shop?.name}</p>
+                            </TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); onDeleteSku(product.id)}}>
+                                    <Trash2 className="h-4 w-4"/>
+                                </Button>
+                            </TooltipTrigger>
+                             <TooltipContent>
+                                <p>Удалить SKU</p>
                             </TooltipContent>
                         </Tooltip>
                     </div>

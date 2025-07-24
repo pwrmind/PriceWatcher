@@ -68,12 +68,12 @@ function generatePositionHistory(basePosition: number, days: number, sku: string
     return history;
 }
 
-export const shops: Shop[] = [
+export const allShops: Shop[] = [
   { id: 'shop-1', name: 'Основной магазин' },
   { id: 'shop-2', name: 'Филиал "Север"' },
 ];
 
-export const managers: Manager[] = [
+export const allManagers: Manager[] = [
   { id: 'manager-1', name: 'Анна Иванова', avatarUrl: 'https://placehold.co/40x40.png', shopId: 'shop-1' },
   { id: 'manager-2', name: 'Петр Петров', avatarUrl: 'https://placehold.co/40x40.png', shopId: 'shop-1' },
   { id: 'manager-3', name: 'Мария Сидорова', avatarUrl: 'https://placehold.co/40x40.png', shopId: 'shop-2' },
@@ -482,3 +482,4 @@ export const managedProducts: Product[] = allAvailableProducts.filter(p => p.sho
     
 
     
+

@@ -6,7 +6,7 @@ import { SkuSidebar } from '@/components/app/sku-sidebar';
 import { PriceHistoryChart } from '@/components/app/price-history-chart';
 import { ComparisonSection } from '@/components/app/comparison-section';
 import { RecommendedActions } from '@/components/app/recommended-actions';
-import { allAvailableProducts as allAvailableProductsData, managedProducts as managedProductsData, managers as allManagers, shops } from '@/lib/mock-data';
+import { allAvailableProducts as allAvailableProductsData, managedProducts as managedProductsData, allManagers as allManagersData, allShops as allShopsData } from '@/lib/mock-data';
 import type { Product, Manager, Shop } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 import { PositionHistoryChart } from '@/components/app/position-history-chart';
@@ -17,6 +17,9 @@ export default function Home() {
   const allAvailableProducts = useMemo(() => allAvailableProductsData, []);
   
   const [trackedSkus, setTrackedSkus] = useState<Product[]>(managedProductsData);
+  const [shops, setShops] = useState<Shop[]>(allShopsData);
+  const [allManagers, setAllManagers] = useState<Manager[]>(allManagersData);
+
   const [selectedShopId, setSelectedShopId] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -25,7 +28,7 @@ export default function Home() {
       return allManagers;
     }
     return allManagers.filter(m => m.shopId === selectedShopId)
-  }, [selectedShopId]);
+  }, [selectedShopId, allManagers]);
   
   const [selectedManagerId, setSelectedManagerId] = useState<string>('all');
   
@@ -227,6 +230,36 @@ export default function Home() {
     });
   };
 
+  const handleAddNewShop = (name: string) => {
+    const newShop: Shop = {
+        id: `shop-${Date.now()}`,
+        name: name,
+    };
+    setShops(prev => [...prev, newShop]);
+    setSelectedShopId(newShop.id);
+    toast({
+        title: "Магазин добавлен",
+        description: `Магазин "${name}" был успешно создан.`,
+        variant: "default",
+    });
+  };
+
+  const handleAddNewManager = (name: string, shopId: string) => {
+      const newManager: Manager = {
+          id: `manager-${Date.now()}`,
+          name: name,
+          shopId: shopId,
+          avatarUrl: 'https://placehold.co/40x40.png',
+      };
+      setAllManagers(prev => [...prev, newManager]);
+      setSelectedManagerId(newManager.id);
+      toast({
+          title: "Менеджер добавлен",
+          description: `Менеджер "${name}" был успешно добавлен в магазин.`,
+          variant: "default",
+      });
+  };
+
   return (
     <SidebarProvider>
       <SkuSidebar
@@ -234,9 +267,11 @@ export default function Home() {
         shops={shops}
         selectedShopId={selectedShopId}
         onShopChange={handleShopChange}
+        onAddNewShop={handleAddNewShop}
         managers={managersForSelectedShop}
         selectedManagerId={selectedManagerId}
         onManagerChange={handleManagerChange}
+        onAddNewManager={handleAddNewManager}
         selectedSkuId={selectedSkuId}
         onSelectSku={handleSelectSku}
         onAddSku={handleAddTrackedSku}
