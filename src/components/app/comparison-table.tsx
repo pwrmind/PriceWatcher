@@ -5,12 +5,13 @@ import Image from 'next/image';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Star, Trash2 } from 'lucide-react';
+import { Star, Trash2, RefreshCw, Loader2 } from 'lucide-react';
 import type { Product, Manager } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { SkuInfoModal } from './sku-info-modal';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { useState } from 'react';
 
 interface ComparisonTableProps {
   mainProduct: Product | undefined;
@@ -33,6 +34,14 @@ export function ComparisonTable({
     onUpdatePrice,
     onRefreshSku
 }: ComparisonTableProps) {
+  const [refreshingSkuId, setRefreshingSkuId] = useState<string | null>(null);
+
+  const handleRefreshClick = async (skuId: string) => {
+    setRefreshingSkuId(skuId);
+    await onRefreshSku(skuId);
+    setRefreshingSkuId(null);
+  };
+
   const filteredComparisonProducts = mainProduct
     ? comparisonProducts.filter((p) => p.id !== mainProduct.id)
     : comparisonProducts;
@@ -163,9 +172,22 @@ export function ComparisonTable({
             <TableCell className="font-semibold sticky left-0 z-10 bg-card">Дата обновления</TableCell>
             {allProducts.map((product, index) => {
               const lastUpdate = product.priceHistory.slice(-1)[0]?.date;
+              const isRefreshing = refreshingSkuId === product.id;
               return (
-                <TableCell key={product.id} className={cn("text-sm text-muted-foreground", index === 0 && "sticky left-[150px] z-10 bg-card")}>
-                  {lastUpdate ? formatDate(lastUpdate) : 'N/A'}
+                <TableCell key={product.id} className={cn("text-sm", index === 0 && "sticky left-[150px] z-10 bg-card")}>
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground">{lastUpdate ? formatDate(lastUpdate) : 'N/A'}</span>
+                    {product.shopId !== 'competitor' && (
+                       <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleRefreshClick(product.id)} disabled={isRefreshing}>
+                           {isRefreshing ? (
+                             <Loader2 className="h-4 w-4 text-muted-foreground animate-spin"/>
+                           ) : (
+                             <RefreshCw className="h-4 w-4 text-muted-foreground"/>
+                           )}
+                          <span className="sr-only">Обновить SKU</span>
+                       </Button>
+                    )}
+                  </div>
                 </TableCell>
               )
             })}
