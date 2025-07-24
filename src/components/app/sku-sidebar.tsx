@@ -69,7 +69,6 @@ export function SkuSidebar({
     <Sidebar>
       <SidebarHeader>
         <div className='px-2 space-y-2'>
-            <h2 className="text-xl font-semibold">Ваши SKU</h2>
             <Select value={selectedShopId} onValueChange={onShopChange}>
                 <SelectTrigger className="w-full">
                     <SelectValue>
