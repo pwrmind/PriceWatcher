@@ -61,7 +61,7 @@ Name: {{{mainProduct.name}}}
 SKU: {{{mainProduct.id}}}
 Marketplace: {{{mainProduct.marketplace}}}
 Rating: {{{mainProduct.rating}}} ({{mainProduct.reviews}} reviews)
-Current Price: ${{{mainProduct.priceHistory.[-1].price}}}
+Current Price: \${{{mainProduct.priceHistory.[-1].price}}}
 Features: {{#each mainProduct.features}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}
 
 Competitor Products:
@@ -69,7 +69,7 @@ Competitor Products:
 - Name: {{{this.name}}} ({{this.marketplace}})
   SKU: {{{this.id}}}
   Rating: {{{this.rating}}} ({{this.reviews}} reviews)
-  Price: ${{{this.priceHistory.[-1].price}}}
+  Price: \${{{this.priceHistory.[-1].price}}}
   Features: {{#each this.features}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}
 {{else}}
 No competitor products to compare.
