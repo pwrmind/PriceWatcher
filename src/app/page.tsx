@@ -50,7 +50,9 @@ export default function Home() {
   }, [productsForSelectedShop, selectedManagerId, searchTerm]);
   
   const [selectedSkuId, setSelectedSkuId] = useState<string | null>(managedProducts[0]?.id || null);
-  const [comparisonProducts, setComparisonProducts] = useState<Product[]>([]);
+  const [comparisonProducts, setComparisonProducts] = useState<Product[]>(
+    allAvailableProductsData.filter(p => ['COMP-GGL-NEST-A', 'COMP-BOSE-QC-45'].includes(p.id))
+  );
 
   const handleShopChange = (shopId: string) => {
     setSelectedShopId(shopId);
