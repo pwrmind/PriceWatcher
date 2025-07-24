@@ -190,6 +190,17 @@ export default function Home() {
 
   const mainProduct = useMemo(() => trackedSkus.find(p => p.id === selectedSkuId), [trackedSkus, selectedSkuId]);
 
+  const managersForMainProduct = useMemo(() => {
+    if (!mainProduct) return [];
+    return allManagers.filter(m => m.shopId === mainProduct.shopId);
+  }, [mainProduct]);
+  
+  const mainProductManager = useMemo(() => {
+    if (!mainProduct || !mainProduct.managerId) return null;
+    return allManagers.find(m => m.id === mainProduct.managerId);
+  }, [mainProduct]);
+
+
   return (
     <SidebarProvider>
       <SkuSidebar
@@ -213,7 +224,14 @@ export default function Home() {
         <main className="flex flex-col gap-8 p-4 md:p-8">
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
               <div className="lg:col-span-3">
-                <PriceHistoryChart mainProduct={mainProduct} comparisonProducts={comparisonProducts} />
+                <PriceHistoryChart 
+                  mainProduct={mainProduct} 
+                  comparisonProducts={comparisonProducts}
+                  manager={mainProductManager}
+                  availableManagers={managersForMainProduct}
+                  onAssignManager={handleAssignManager}
+                  onUnassignManager={handleUnassignManager}
+                />
               </div>
               <div className="lg:col-span-2">
                 {mainProduct && <RecommendedActions mainProduct={mainProduct} comparisonProducts={comparisonProducts} />}
