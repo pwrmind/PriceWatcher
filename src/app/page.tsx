@@ -6,6 +6,7 @@ import { SkuSidebar } from '@/components/app/sku-sidebar';
 import { PriceHistoryChart } from '@/components/app/price-history-chart';
 import { ComparisonSection } from '@/components/app/comparison-section';
 import { RecommendedActions } from '@/components/app/recommended-actions';
+import { SkuInfoCard } from '@/components/app/sku-info-card';
 import { allAvailableProducts as allAvailableProductsData, managedProducts as managedProductsData, managers as allManagers, shops } from '@/lib/mock-data';
 import type { Product, Manager, Shop } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
@@ -222,18 +223,23 @@ export default function Home() {
       />
       <SidebarInset>
         <main className="flex flex-col gap-8 p-4 md:p-8">
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-              <div className="lg:col-span-3">
-                <PriceHistoryChart 
-                  mainProduct={mainProduct} 
-                  comparisonProducts={comparisonProducts}
-                  manager={mainProductManager}
-                  availableManagers={managersForMainProduct}
-                  onAssignManager={handleAssignManager}
-                  onUnassignManager={handleUnassignManager}
-                />
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+              <div className="xl:col-span-2 grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <div className="lg:col-span-2">
+                  <SkuInfoCard product={mainProduct} />
+                </div>
+                <div className="lg:col-span-3">
+                  <PriceHistoryChart 
+                    mainProduct={mainProduct} 
+                    comparisonProducts={comparisonProducts}
+                    manager={mainProductManager}
+                    availableManagers={managersForMainProduct}
+                    onAssignManager={handleAssignManager}
+                    onUnassignManager={handleUnassignManager}
+                  />
+                </div>
               </div>
-              <div className="lg:col-span-2">
+              <div className="xl:col-span-1">
                 {mainProduct && <RecommendedActions mainProduct={mainProduct} comparisonProducts={comparisonProducts} />}
               </div>
             </div>
