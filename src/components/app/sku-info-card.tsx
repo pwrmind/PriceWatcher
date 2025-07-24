@@ -3,13 +3,14 @@
 
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { Building, Star, UserPlus, Pencil } from 'lucide-react';
+import { Building, Star, UserPlus, Pencil, RefreshCw, Loader2 } from 'lucide-react';
 import type { Product, Manager } from '@/lib/types';
 import { AssignManagerDialog } from './assign-manager-dialog';
 import { EditPriceDialog } from './edit-price-dialog';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { CardDescription, CardHeader, CardTitle, CardFooter, CardContent } from '../ui/card';
+import { useState } from 'react';
 
 
 interface SkuInfoCardProps {
@@ -19,10 +20,18 @@ interface SkuInfoCardProps {
   onAssignManager: (skuId: string, managerId: string) => void;
   onUnassignManager: (skuId: string) => void;
   onUpdatePrice: (skuId: string, newPrice: number) => void;
+  onRefreshSku: (skuId: string) => Promise<void>;
   isCompetitor: boolean;
 }
 
-export function SkuInfoCard({ product, manager, availableManagers, onAssignManager, onUnassignManager, onUpdatePrice, isCompetitor }: SkuInfoCardProps) {
+export function SkuInfoCard({ product, manager, availableManagers, onAssignManager, onUnassignManager, onUpdatePrice, onRefreshSku, isCompetitor }: SkuInfoCardProps) {
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefreshClick = async () => {
+    setIsRefreshing(true);
+    await onRefreshSku(product.id);
+    setIsRefreshing(false);
+  };
   
   const renderRating = (rating: number, reviews: number) => (
     <div className="flex items-center gap-2">
@@ -109,20 +118,30 @@ export function SkuInfoCard({ product, manager, availableManagers, onAssignManag
             </div>
         </div>
       </CardContent>
-       {manager && !isCompetitor && (
-        <CardFooter className="p-0 border-t pt-4 mt-4">
-            <div className="flex items-center gap-3">
-                <Avatar className="w-8 h-8">
-                    <AvatarImage src={manager.avatarUrl} alt={manager.name} />
-                    <AvatarFallback>{manager.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div>
-                    <p className="text-sm font-medium text-muted-foreground">Менеджер</p>
-                    <p className="font-semibold">{manager.name}</p>
+       <CardFooter className="p-0 border-t pt-4 mt-4 flex justify-between items-center">
+            {manager && !isCompetitor ? (
+                <div className="flex items-center gap-3">
+                    <Avatar className="w-8 h-8">
+                        <AvatarImage src={manager.avatarUrl} alt={manager.name} />
+                        <AvatarFallback>{manager.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                        <p className="text-sm font-medium text-muted-foreground">Менеджер</p>
+                        <p className="font-semibold">{manager.name}</p>
+                    </div>
                 </div>
-            </div>
+            ) : <div />}
+            {!isCompetitor && (
+                 <Button variant="outline" size="sm" onClick={handleRefreshClick} disabled={isRefreshing}>
+                    {isRefreshing ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                        <RefreshCw className="mr-2 h-4 w-4" />
+                    )}
+                    Обновить данные
+                </Button>
+            )}
         </CardFooter>
-      )}
     </>
   );
 }

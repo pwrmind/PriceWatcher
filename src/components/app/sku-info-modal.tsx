@@ -21,6 +21,7 @@ interface SkuInfoModalProps {
   onAssignManager: (skuId: string, managerId: string) => void;
   onUnassignManager: (skuId: string) => void;
   onUpdatePrice: (skuId: string, newPrice: number) => void;
+  onRefreshSku: (skuId: string) => Promise<void>;
   isCompetitor: boolean;
 }
 
@@ -32,6 +33,7 @@ export function SkuInfoModal({
     onAssignManager, 
     onUnassignManager, 
     onUpdatePrice,
+    onRefreshSku,
     isCompetitor
 }: SkuInfoModalProps) {
   const [open, setOpen] = useState(false);
@@ -56,6 +58,7 @@ export function SkuInfoModal({
                 onAssignManager={onAssignManager}
                 onUnassignManager={onUnassignManager}
                 onUpdatePrice={onUpdatePrice}
+                onRefreshSku={onRefreshSku}
                 isCompetitor={isCompetitor}
             />
         </div>

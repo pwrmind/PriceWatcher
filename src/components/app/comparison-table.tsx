@@ -18,6 +18,7 @@ interface ComparisonTableProps {
   onAssignManager: (skuId: string, managerId: string) => void;
   onUnassignManager: (skuId: string) => void;
   onUpdatePrice: (skuId: string, newPrice: number) => void;
+  onRefreshSku: (skuId: string) => Promise<void>;
 }
 
 export function ComparisonTable({ 
@@ -27,7 +28,8 @@ export function ComparisonTable({
     onRemoveComparisonSku, 
     onAssignManager, 
     onUnassignManager, 
-    onUpdatePrice 
+    onUpdatePrice,
+    onRefreshSku
 }: ComparisonTableProps) {
   const filteredComparisonProducts = mainProduct
     ? comparisonProducts.filter((p) => p.id !== mainProduct.id)
@@ -98,6 +100,7 @@ export function ComparisonTable({
                         onAssignManager={onAssignManager}
                         onUnassignManager={onUnassignManager}
                         onUpdatePrice={onUpdatePrice}
+                        onRefreshSku={onRefreshSku}
                         isCompetitor={product.shopId === 'competitor'}
                       >
                         <p className="font-bold hover:underline cursor-pointer">{product.name}</p>

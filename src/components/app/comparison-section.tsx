@@ -18,6 +18,7 @@ interface ComparisonSectionProps {
   onAssignManager: (skuId: string, managerId: string) => void;
   onUnassignManager: (skuId: string) => void;
   onUpdatePrice: (skuId: string, newPrice: number) => void;
+  onRefreshSku: (skuId: string) => Promise<void>;
 }
 
 export function ComparisonSection({ 
@@ -28,7 +29,8 @@ export function ComparisonSection({
     onRemoveComparisonSku,
     onAssignManager,
     onUnassignManager,
-    onUpdatePrice
+    onUpdatePrice,
+    onRefreshSku
 }: ComparisonSectionProps) {
   
   const handleAddSku = (event: React.FormEvent<HTMLFormElement>) => {
@@ -64,6 +66,7 @@ export function ComparisonSection({
             onAssignManager={onAssignManager}
             onUnassignManager={onUnassignManager}
             onUpdatePrice={onUpdatePrice}
+            onRefreshSku={onRefreshSku}
         />
       </CardContent>
     </Card>

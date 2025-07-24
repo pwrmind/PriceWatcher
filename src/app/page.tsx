@@ -10,6 +10,7 @@ import { allAvailableProducts as allAvailableProductsData, managedProducts as ma
 import type { Product, Manager, Shop } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 import { PositionHistoryChart } from '@/components/app/position-history-chart';
+import { refreshSkuData } from './actions';
 
 export default function Home() {
   const { toast } = useToast();
@@ -260,6 +261,40 @@ export default function Home() {
       });
   };
 
+  const handleRefreshSku = async (skuId: string) => {
+    const result = await refreshSkuData(skuId);
+    if ('error' in result) {
+        toast({
+            title: "Ошибка обновления",
+            description: result.error,
+            variant: "destructive",
+        });
+        return;
+    }
+    
+    setTrackedSkus(prev => 
+      prev.map(p => {
+        if (p.id === skuId) {
+          const newPriceHistory = [...p.priceHistory, result.price];
+          const newPositionHistory = [...p.positionHistory, result.position];
+          return { 
+            ...p, 
+            priceHistory: newPriceHistory,
+            positionHistory: newPositionHistory,
+            currentPrice: result.price.price 
+          };
+        }
+        return p;
+      })
+    );
+
+    toast({
+        title: "Данные обновлены",
+        description: `Свежие данные для SKU ${skuId} были успешно загружены.`,
+        variant: "default",
+    });
+  };
+
   return (
     <SidebarProvider>
       <SkuSidebar
@@ -302,6 +337,7 @@ export default function Home() {
               onAssignManager={handleAssignManager}
               onUnassignManager={handleUnassignManager}
               onUpdatePrice={handleUpdatePrice}
+              onRefreshSku={handleRefreshSku}
             />
             {mainProduct && (
               <RecommendedActions 
