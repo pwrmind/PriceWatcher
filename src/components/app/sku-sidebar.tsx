@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Search, Trash2, Building, Users, Globe } from 'lucide-react';
+import { Search, Trash2, Building, Users, Globe, Plus } from 'lucide-react';
 import Image from 'next/image';
 import {
   Sidebar,
@@ -22,6 +22,7 @@ import { ThemeToggle } from './theme-toggle';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { AddSkuDialog } from './add-sku-dialog';
 
 interface SkuSidebarProps {
   products: Product[];
@@ -54,16 +55,6 @@ export function SkuSidebar({
   searchTerm,
   onSearchChange,
 }: SkuSidebarProps) {
-
-  const handleAddSku = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const sku = formData.get('sku') as string;
-    if (sku) {
-      onAddSku(sku.trim());
-      event.currentTarget.reset();
-    }
-  };
   
   const selectedManager = managers.find(m => m.id === selectedManagerId);
   const selectedShop = shops.find(s => s.id === selectedShopId);
@@ -73,15 +64,6 @@ export function SkuSidebar({
       <SidebarHeader>
         <div className='px-2 space-y-2'>
             <h2 className="text-xl font-semibold">Ваши SKU</h2>
-            <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input 
-                    placeholder="Поиск по названию SKU..." 
-                    className="pl-9" 
-                    value={searchTerm}
-                    onChange={(e) => onSearchChange(e.target.value)}
-                />
-            </div>
             <Select value={selectedShopId} onValueChange={onShopChange}>
                 <SelectTrigger className="w-full">
                     <SelectValue>
@@ -159,11 +141,24 @@ export function SkuSidebar({
                 ))}
               </SelectContent>
             </Select>
+            <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input 
+                    placeholder="Поиск по названию SKU..." 
+                    className="pl-9" 
+                    value={searchTerm}
+                    onChange={(e) => onSearchChange(e.target.value)}
+                />
+            </div>
         </div>
-        <form onSubmit={handleAddSku} className="relative px-2">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input name="sku" placeholder="Добавить свой SKU..." className="pl-8 bg-background" />
-        </form>
+        <div className="px-2 mt-2">
+          <AddSkuDialog onAddSku={onAddSku}>
+              <Button variant="outline" className="w-full">
+                  <Plus className="mr-2 h-4 w-4"/>
+                  Добавить SKU
+              </Button>
+          </AddSkuDialog>
+        </div>
       </SidebarHeader>
       <Separator />
       <SidebarContent className="p-0">
