@@ -39,8 +39,6 @@ export function SkuInfoCard({ product, manager, availableManagers, onAssignManag
       <CardHeader className="p-0">
         <div className="flex justify-between items-start">
             <div>
-                 <CardTitle>{product.name}</CardTitle>
-                 <CardDescription>SKU: {product.id}</CardDescription>
                  <CardDescription className="flex items-center gap-1 mt-1">
                     <Building className="w-4 h-4"/>
                     {product.marketplace}

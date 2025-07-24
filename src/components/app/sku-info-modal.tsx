@@ -5,6 +5,9 @@ import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import type { Product, Manager } from '@/lib/types';
@@ -39,7 +42,13 @@ export function SkuInfoModal({
         {children}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
-        <div className="flex flex-col gap-4">
+        <DialogHeader>
+          <DialogTitle>{product.name}</DialogTitle>
+          <DialogDescription>
+            Подробная информация о SKU: {product.id}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex flex-col gap-4 py-4">
             <SkuInfoCard 
                 product={product}
                 manager={manager}
