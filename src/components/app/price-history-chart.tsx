@@ -3,15 +3,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
 import { Line, LineChart, XAxis, YAxis, CartesianGrid } from 'recharts';
-import type { Product, Manager } from '@/lib/types';
+import type { Product } from '@/lib/types';
 import { useMemo, useState } from 'react';
 import { subDays, subMonths } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { UserPlus } from 'lucide-react';
-import { AssignManagerDialog } from './assign-manager-dialog';
-
 
 type TimeRange = '7d' | '30d' | '6m' | '1y';
 
@@ -25,13 +21,9 @@ const timeRanges: { value: TimeRange, label: string }[] = [
 interface PriceHistoryChartProps {
   mainProduct: Product | undefined;
   comparisonProducts: Product[];
-  manager: Manager | null | undefined;
-  availableManagers: Manager[];
-  onAssignManager: (skuId: string, managerId: string) => void;
-  onUnassignManager: (skuId: string) => void;
 }
 
-export function PriceHistoryChart({ mainProduct, comparisonProducts, manager, availableManagers, onAssignManager, onUnassignManager }: PriceHistoryChartProps) {
+export function PriceHistoryChart({ mainProduct, comparisonProducts }: PriceHistoryChartProps) {
   const [timeRange, setTimeRange] = useState<TimeRange>('7d');
 
   const { chartData, chartConfig } = useMemo(() => {
@@ -112,29 +104,6 @@ export function PriceHistoryChart({ mainProduct, comparisonProducts, manager, av
                 <CardTitle>История цен</CardTitle>
                 <CardDescription>Колебания цен за выбранный период.</CardDescription>
             </div>
-            {mainProduct && (
-              <AssignManagerDialog
-                managers={availableManagers}
-                currentManagerId={mainProduct.managerId}
-                onAssignManager={(managerId) => onAssignManager(mainProduct.id, managerId)}
-                onUnassignManager={() => onUnassignManager(mainProduct.id)}
-              >
-                  {manager ? (
-                     <Button variant="outline" className="shrink-0">
-                        <Avatar className="w-6 h-6 mr-2">
-                            <AvatarImage src={manager.avatarUrl} alt={manager.name} />
-                            <AvatarFallback>{manager.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <span className="font-medium">{manager.name}</span>
-                    </Button>
-                  ) : (
-                    <Button variant="outline" className="shrink-0">
-                        <UserPlus className="mr-2 h-4 w-4"/>
-                        Назначить менеджера
-                    </Button>
-                  )}
-            </AssignManagerDialog>
-            )}
         </div>
       </CardHeader>
       <CardContent className="flex-grow">

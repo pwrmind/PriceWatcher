@@ -2,16 +2,24 @@
 'use client';
 
 import Image from 'next/image';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Star } from 'lucide-react';
-import type { Product } from '@/lib/types';
+import { Star, UserPlus } from 'lucide-react';
+import type { Product, Manager } from '@/lib/types';
+import { AssignManagerDialog } from './assign-manager-dialog';
+import { Button } from '../ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+
 
 interface SkuInfoCardProps {
   product: Product | undefined;
+  manager: Manager | null | undefined;
+  availableManagers: Manager[];
+  onAssignManager: (skuId: string, managerId: string) => void;
+  onUnassignManager: (skuId: string) => void;
 }
 
-export function SkuInfoCard({ product }: SkuInfoCardProps) {
+export function SkuInfoCard({ product, manager, availableManagers, onAssignManager, onUnassignManager }: SkuInfoCardProps) {
   if (!product) {
     return (
       <Card className="h-full">
@@ -41,10 +49,35 @@ export function SkuInfoCard({ product }: SkuInfoCardProps) {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
-        <CardTitle>{product.name}</CardTitle>
-        <CardDescription>SKU: {product.id}</CardDescription>
+        <div className="flex justify-between items-start">
+            <div>
+                 <CardTitle>{product.name}</CardTitle>
+                 <CardDescription>SKU: {product.id}</CardDescription>
+            </div>
+            <AssignManagerDialog
+              managers={availableManagers}
+              currentManagerId={product.managerId}
+              onAssignManager={(managerId) => onAssignManager(product.id, managerId)}
+              onUnassignManager={() => onUnassignManager(product.id)}
+            >
+                {manager ? (
+                   <Button variant="ghost" size="icon" className="shrink-0 h-10 w-10">
+                      <Avatar className="w-8 h-8">
+                          <AvatarImage src={manager.avatarUrl} alt={manager.name} />
+                          <AvatarFallback>{manager.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <span className="sr-only">Изменить менеджера</span>
+                  </Button>
+                ) : (
+                  <Button variant="outline" size="icon" className="shrink-0 h-10 w-10">
+                      <UserPlus className="h-5 w-5"/>
+                      <span className="sr-only">Назначить менеджера</span>
+                  </Button>
+                )}
+          </AssignManagerDialog>
+        </div>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="flex flex-col gap-4 flex-grow">
         <div className="flex items-center justify-center">
             <Image 
                 src={product.imageUrl} 
@@ -67,6 +100,20 @@ export function SkuInfoCard({ product }: SkuInfoCardProps) {
             </div>
         </div>
       </CardContent>
+       {manager && (
+        <CardFooter className="border-t pt-4">
+            <div className="flex items-center gap-3">
+                <Avatar className="w-8 h-8">
+                    <AvatarImage src={manager.avatarUrl} alt={manager.name} />
+                    <AvatarFallback>{manager.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <div>
+                    <p className="text-sm font-medium text-muted-foreground">Менеджер</p>
+                    <p className="font-semibold">{manager.name}</p>
+                </div>
+            </div>
+        </CardFooter>
+      )}
     </Card>
   );
 }

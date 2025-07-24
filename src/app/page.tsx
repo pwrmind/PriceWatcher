@@ -226,16 +226,18 @@ export default function Home() {
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
               <div className="xl:col-span-2 grid grid-cols-1 lg:grid-cols-5 gap-8">
                 <div className="lg:col-span-2">
-                  <SkuInfoCard product={mainProduct} />
+                  <SkuInfoCard 
+                    product={mainProduct}
+                    manager={mainProductManager}
+                    availableManagers={managersForMainProduct}
+                    onAssignManager={handleAssignManager}
+                    onUnassignManager={handleUnassignManager}
+                  />
                 </div>
                 <div className="lg:col-span-3">
                   <PriceHistoryChart 
                     mainProduct={mainProduct} 
                     comparisonProducts={comparisonProducts}
-                    manager={mainProductManager}
-                    availableManagers={managersForMainProduct}
-                    onAssignManager={handleAssignManager}
-                    onUnassignManager={handleUnassignManager}
                   />
                 </div>
               </div>
