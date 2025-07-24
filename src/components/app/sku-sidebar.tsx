@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, Trash2, Building } from 'lucide-react';
+import { Search, Trash2, Building, Users } from 'lucide-react';
 import Image from 'next/image';
 import {
   Sidebar,
@@ -93,15 +93,30 @@ export function SkuSidebar({
               <SelectTrigger className="w-full">
                 <SelectValue asChild>
                     <div className="flex items-center gap-2">
-                        <Avatar className="w-6 h-6">
-                            <AvatarImage src={selectedManager?.avatarUrl} alt={selectedManager?.name} />
-                            <AvatarFallback>{selectedManager?.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <span>{selectedManager?.name}</span>
+                         {selectedManager ? (
+                            <>
+                                <Avatar className="w-6 h-6">
+                                    <AvatarImage src={selectedManager?.avatarUrl} alt={selectedManager?.name} />
+                                    <AvatarFallback>{selectedManager?.name.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                                <span>{selectedManager?.name}</span>
+                            </>
+                         ) : (
+                            <>
+                                <Users className="w-5 h-5" />
+                                <span>Все менеджеры</span>
+                            </>
+                         )}
                     </div>
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="">
+                    <div className="flex items-center gap-2">
+                        <Users className="w-5 h-5" />
+                        <span>Все менеджеры</span>
+                    </div>
+                </SelectItem>
                 {managers.map(manager => (
                   <SelectItem key={manager.id} value={manager.id}>
                     <div className="flex items-center gap-2">

@@ -20,23 +20,26 @@ export default function Home() {
 
   const managersForSelectedShop = useMemo(() => managers.filter(m => m.shopId === selectedShopId), [selectedShopId]);
   
-  const [selectedManagerId, setSelectedManagerId] = useState<string>(managersForSelectedShop[0].id);
+  const [selectedManagerId, setSelectedManagerId] = useState<string>('');
   
   const productsForSelectedShop = useMemo(() => trackedSkus.filter(p => p.shopId === selectedShopId), [trackedSkus, selectedShopId]);
-  const managedProducts = useMemo(() => productsForSelectedShop.filter(p => p.managerId === selectedManagerId), [productsForSelectedShop, selectedManagerId]);
+  
+  const managedProducts = useMemo(() => {
+    if (!selectedManagerId) {
+      return productsForSelectedShop;
+    }
+    return productsForSelectedShop.filter(p => p.managerId === selectedManagerId)
+  }, [productsForSelectedShop, selectedManagerId]);
   
   const [selectedSkuId, setSelectedSkuId] = useState<string | null>(managedProducts[0]?.id || null);
   const [comparisonProducts, setComparisonProducts] = useState<Product[]>([]);
 
   const handleShopChange = (shopId: string) => {
     setSelectedShopId(shopId);
-    const newShopManagers = managers.filter(m => m.shopId === shopId);
-    const firstManagerId = newShopManagers[0]?.id || '';
-    setSelectedManagerId(firstManagerId);
+    setSelectedManagerId(''); // Reset manager filter
 
     const newShopProducts = trackedSkus.filter(p => p.shopId === shopId);
-    const newManagerProducts = newShopProducts.filter(p => p.managerId === firstManagerId);
-    setSelectedSkuId(newManagerProducts[0]?.id || null);
+    setSelectedSkuId(newShopProducts[0]?.id || null);
   };
 
   const handleSelectSku = (id: string) => {
@@ -45,7 +48,7 @@ export default function Home() {
   
   const handleManagerChange = (managerId: string) => {
     setSelectedManagerId(managerId);
-    const newManagerProducts = productsForSelectedShop.filter(p => p.managerId === managerId);
+    const newManagerProducts = managerId ? productsForSelectedShop.filter(p => p.managerId === managerId) : productsForSelectedShop;
     setSelectedSkuId(newManagerProducts[0]?.id || null);
   };
 
@@ -70,7 +73,8 @@ export default function Home() {
             });
             return;
         }
-        if (productToAdd.managerId !== selectedManagerId) {
+        // When adding, we don't check manager if "All managers" is selected
+        if (selectedManagerId && productToAdd.managerId !== selectedManagerId) {
              toast({
                 title: "Неверный менеджер",
                 description: `Этот SKU принадлежит другому менеджеру.`,
@@ -97,7 +101,9 @@ export default function Home() {
     setTrackedSkus(prods => {
       const remainingProducts = prods.filter(p => p.id !== id);
       if (selectedSkuId === id) {
-        const remainingManaged = remainingProducts.filter(p => p.managerId === selectedManagerId && p.shopId === selectedShopId);
+        const remainingManaged = selectedManagerId 
+          ? remainingProducts.filter(p => p.managerId === selectedManagerId && p.shopId === selectedShopId)
+          : remainingProducts.filter(p => p.shopId === selectedShopId);
         setSelectedSkuId(remainingManaged[0]?.id || null);
       }
       return remainingProducts;
