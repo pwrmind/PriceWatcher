@@ -14,9 +14,10 @@ interface PriceHistoryChartProps {
 export function PriceHistoryChart({ mainProduct, comparisonProducts }: PriceHistoryChartProps) {
 
   const { chartData, chartConfig } = useMemo(() => {
-    if (!mainProduct) return { chartData: [], chartConfig: {} };
+    const allProducts = [...(mainProduct ? [mainProduct] : []), ...comparisonProducts];
 
-    const allProducts = [mainProduct, ...comparisonProducts];
+    if (allProducts.length === 0) return { chartData: [], chartConfig: {} };
+
     const combinedDataMap = new Map<string, { date: string; [key: string]: number | string }>();
 
     allProducts.forEach(product => {
@@ -44,7 +45,7 @@ export function PriceHistoryChart({ mainProduct, comparisonProducts }: PriceHist
     return { chartData: data, chartConfig: config };
   }, [mainProduct, comparisonProducts]);
 
-  if (!mainProduct) {
+  if (!mainProduct && comparisonProducts.length === 0) {
     return (
         <Card className="w-full">
             <CardHeader>

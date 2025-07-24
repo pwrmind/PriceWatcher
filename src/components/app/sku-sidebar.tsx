@@ -22,9 +22,7 @@ import { ThemeToggle } from './theme-toggle';
 interface SkuSidebarProps {
   products: Product[];
   selectedSkuId: string | null;
-  comparisonSkuIds: string[];
   onSelectSku: (id: string) => void;
-  onToggleCompare: (id:string) => void;
   onAddSku: (id: string) => void;
   onDeleteSku: (id: string) => void;
 }
@@ -32,9 +30,7 @@ interface SkuSidebarProps {
 export function SkuSidebar({
   products,
   selectedSkuId,
-  comparisonSkuIds,
   onSelectSku,
-  onToggleCompare,
   onAddSku,
   onDeleteSku
 }: SkuSidebarProps) {
@@ -52,10 +48,10 @@ export function SkuSidebar({
   return (
     <Sidebar>
       <SidebarHeader>
-        <h2 className="text-xl font-semibold px-2">MarketWatch</h2>
+        <h2 className="text-xl font-semibold px-2">Ваши SKU</h2>
         <form onSubmit={handleAddSku} className="relative px-2">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input name="sku" placeholder="Отследить новый SKU..." className="pl-8 bg-background" />
+          <Input name="sku" placeholder="Добавить свой SKU..." className="pl-8 bg-background" />
         </form>
       </SidebarHeader>
       <Separator />
@@ -86,23 +82,6 @@ export function SkuSidebar({
                   </div>
                 </div>
                 <div className="flex items-center gap-1 ml-auto">
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button 
-                                variant="ghost" 
-                                size="icon" 
-                                className="h-7 w-7" 
-                                onClick={(e) => { e.stopPropagation(); onToggleCompare(product.id)}} 
-                                disabled={product.id === selectedSkuId}
-                                aria-label={comparisonSkuIds.includes(product.id) ? "Убрать из сравнения" : "Добавить к сравнению"}
-                            >
-                                {comparisonSkuIds.includes(product.id) ? <CheckSquare className="h-4 w-4 text-primary"/> : <Square className="h-4 w-4"/>}
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>{comparisonSkuIds.includes(product.id) ? "Убрать из сравнения" : "Добавить к сравнению"}</p>
-                        </TooltipContent>
-                    </Tooltip>
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={(e) => {e.stopPropagation(); onDeleteSku(product.id);}} aria-label="Удалить SKU">

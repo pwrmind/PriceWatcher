@@ -4,34 +4,23 @@ import { useState, useMemo } from 'react';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { SkuSidebar } from '@/components/app/sku-sidebar';
 import { PriceHistoryChart } from '@/components/app/price-history-chart';
-import { ComparisonTable } from '@/components/app/comparison-table';
-import { mockProducts } from '@/lib/mock-data';
+import { ComparisonSection } from '@/components/app/comparison-section';
+import { managedProducts, allAvailableProducts } from '@/lib/mock-data';
 import type { Product } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
   const { toast } = useToast();
-  const [products, setProducts] = useState<Product[]>(mockProducts);
-  const [selectedSkuId, setSelectedSkuId] = useState<string | null>(mockProducts[0]?.id || null);
-  const [comparisonSkuIds, setComparisonSkuIds] = useState<string[]>([]);
+  const [managerProducts, setManagerProducts] = useState<Product[]>(managedProducts);
+  const [selectedSkuId, setSelectedSkuId] = useState<string | null>(managerProducts[0]?.id || null);
+  const [comparisonProducts, setComparisonProducts] = useState<Product[]>([]);
 
   const handleSelectSku = (id: string) => {
     setSelectedSkuId(id);
-    setComparisonSkuIds(ids => ids.filter(compId => compId !== id));
   };
 
-  const handleToggleCompare = (id: string) => {
-    setComparisonSkuIds(prevIds => {
-      if (prevIds.includes(id)) {
-        return prevIds.filter(compId => compId !== id);
-      } else {
-        return [...prevIds, id];
-      }
-    });
-  };
-
-  const handleAddSku = (id: string) => {
-    if (products.some(p => p.id === id)) {
+  const handleAddManagerSku = (id: string) => {
+    if (managerProducts.some(p => p.id === id)) {
       toast({
         title: "SKU уже отслеживается",
         description: `Продукт с SKU ${id} уже есть в вашем списке.`,
@@ -39,43 +28,84 @@ export default function Home() {
       });
       return;
     }
-    toast({
-      title: "SKU не найден",
-      description: `Не удалось найти данные о продукте для SKU ${id}. Это демонстрационное приложение.`,
-      variant: "destructive",
-    });
+    
+    const productToAdd = allAvailableProducts.find(p => p.id === id);
+
+    if (productToAdd) {
+        setManagerProducts(prev => [...prev, productToAdd]);
+         toast({
+            title: "SKU добавлен",
+            description: `Продукт ${productToAdd.name} добавлен в ваш список.`,
+            variant: "default",
+        });
+    } else {
+        toast({
+            title: "SKU не найден",
+            description: `Не удалось найти данные о продукте для SKU ${id}.`,
+            variant: "destructive",
+        });
+    }
   };
 
-  const handleDeleteSku = (id: string) => {
-    setProducts(prods => {
+  const handleDeleteManagerSku = (id: string) => {
+    setManagerProducts(prods => {
       const remainingProducts = prods.filter(p => p.id !== id);
       if (selectedSkuId === id) {
         setSelectedSkuId(remainingProducts[0]?.id || null);
       }
-      setComparisonSkuIds(ids => ids.filter(compId => compId !== id));
       return remainingProducts;
     });
+    // Also remove from comparison if it's there
+    setComparisonProducts(comps => comps.filter(c => c.id !== id));
+  };
+  
+  const handleAddComparisonSku = (id: string) => {
+    if (comparisonProducts.some(p => p.id === id)) {
+      toast({
+        title: "SKU уже в сравнении",
+        description: `Продукт с SKU ${id} уже находится в таблице сравнения.`,
+        variant: "default",
+      });
+      return;
+    }
+    
+    const productToCompare = allAvailableProducts.find(p => p.id === id);
+
+    if (productToCompare) {
+        setComparisonProducts(prev => [...prev, productToCompare]);
+    } else {
+        toast({
+            title: "SKU не найден",
+            description: `Не удалось найти данные о продукте для SKU ${id} для сравнения.`,
+            variant: "destructive",
+        });
+    }
+  }
+
+  const handleRemoveComparisonSku = (id: string) => {
+    setComparisonProducts(prev => prev.filter(p => p.id !== id));
   };
 
-
-  const mainProduct = useMemo(() => products.find(p => p.id === selectedSkuId), [products, selectedSkuId]);
-  const comparisonProducts = useMemo(() => products.filter(p => comparisonSkuIds.includes(p.id)), [products, comparisonSkuIds]);
+  const mainProduct = useMemo(() => managerProducts.find(p => p.id === selectedSkuId), [managerProducts, selectedSkuId]);
 
   return (
     <SidebarProvider>
       <SkuSidebar
-        products={products}
+        products={managerProducts}
         selectedSkuId={selectedSkuId}
-        comparisonSkuIds={comparisonSkuIds}
         onSelectSku={handleSelectSku}
-        onToggleCompare={handleToggleCompare}
-        onAddSku={handleAddSku}
-        onDeleteSku={handleDeleteSku}
+        onAddSku={handleAddManagerSku}
+        onDeleteSku={handleDeleteManagerSku}
       />
       <SidebarInset>
         <main className="flex flex-col gap-8 p-4 md:p-8">
             <PriceHistoryChart mainProduct={mainProduct} comparisonProducts={comparisonProducts} />
-            <ComparisonTable mainProduct={mainProduct} comparisonProducts={comparisonProducts} />
+            <ComparisonSection 
+              mainProduct={mainProduct} 
+              comparisonProducts={comparisonProducts}
+              onAddComparisonSku={handleAddComparisonSku}
+              onRemoveComparisonSku={handleRemoveComparisonSku}
+            />
         </main>
       </SidebarInset>
     </SidebarProvider>

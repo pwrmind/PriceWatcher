@@ -21,35 +21,41 @@ function generatePriceHistory(basePrice: number, days: number): { date: string, 
   return history;
 }
 
-export const mockProducts: Product[] = [
+// Represents the SKUs the manager is responsible for.
+export const managedProducts: Product[] = [
   {
     id: 'B08H93ZRK9',
-    name: 'Echo Dot (4th Gen)',
+    name: 'Echo Dot (4-го поколения)',
     imageUrl: 'https://placehold.co/100x100.png',
-    marketplace: 'Amazon',
+    marketplace: 'Наш магазин',
     rating: 4.7,
     reviews: 782341,
-    features: ['Smart speaker', 'Alexa enabled', 'Charcoal fabric', 'Compact design'],
+    features: ['Умная колонка', 'С поддержкой Alexa', 'Цвет древесного угля', 'Компактный дизайн'],
     priceHistory: generatePriceHistory(49.99, 90),
   },
   {
     id: 'B08P2H5L7G',
-    name: 'Google Nest Hub (2nd Gen)',
+    name: 'Google Nest Hub (2-го поколения)',
     imageUrl: 'https://placehold.co/100x100.png',
-    marketplace: 'Best Buy',
+    marketplace: 'Наш магазин',
     rating: 4.6,
     reviews: 12543,
-    features: ['Smart display', 'Google Assistant', 'Chalk color', 'Sleep Sensing'],
+    features: ['Умный дисплей', 'Google Ассистент', 'Цвет «мел»', 'Анализ сна'],
     priceHistory: generatePriceHistory(99.99, 90),
   },
+];
+
+// Represents all available products in the market for comparison.
+export const allAvailableProducts: Product[] = [
+  ...managedProducts,
   {
     id: 'B09J29QDP9',
     name: 'Apple HomePod mini',
     imageUrl: 'https://placehold.co/100x100.png',
-    marketplace: 'Apple Store',
+    marketplace: 'Магазин Apple',
     rating: 4.8,
     reviews: 45678,
-    features: ['360-degree audio', 'Siri integrated', 'Space Gray', 'Intercom feature'],
+    features: ['360-градусный звук', 'Интеграция с Siri', 'Цвет «серый космос»', 'Интерком'],
     priceHistory: generatePriceHistory(99.00, 90),
   },
   {
@@ -59,7 +65,27 @@ export const mockProducts: Product[] = [
     marketplace: 'Sonos.com',
     rating: 4.7,
     reviews: 23456,
-    features: ['Voice control', 'Rich sound', 'Humidity resistant', 'Apple AirPlay 2'],
+    features: ['Голосовое управление', 'Насыщенный звук', 'Влагостойкий', 'Apple AirPlay 2'],
     priceHistory: generatePriceHistory(219.00, 90),
+  },
+    {
+    id: 'B07XJ8C8F7',
+    name: 'Bose Home Speaker 500',
+    imageUrl: 'https://placehold.co/100x100.png',
+    marketplace: 'Amazon',
+    rating: 4.5,
+    reviews: 15987,
+    features: ['Стереозвук', 'Встроенный Alexa', 'ЖК-дисплей', 'Bluetooth'],
+    priceHistory: generatePriceHistory(299.00, 90),
+  },
+  {
+    id: 'B08F26C7R1',
+    name: 'Amazon Echo Show 10 (3rd Gen)',
+    imageUrl: 'https://placehold.co/100x100.png',
+    marketplace: 'Best Buy',
+    rating: 4.7,
+    reviews: 32109,
+    features: ['HD-дисплей', 'Движение', 'Alexa', 'Камера 13 Мп'],
+    priceHistory: generatePriceHistory(249.99, 90),
   },
 ];
