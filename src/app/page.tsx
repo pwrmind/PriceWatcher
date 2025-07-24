@@ -260,18 +260,7 @@ export default function Home() {
       />
       <SidebarInset>
         <main className="flex flex-col gap-8 p-4 md:p-8">
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-              <div className="lg:col-span-2">
-                <SkuInfoCard 
-                  product={mainProduct}
-                  manager={mainProductManager}
-                  availableManagers={managersForMainProduct}
-                  onAssignManager={handleAssignManager}
-                  onUnassignManager={handleUnassignManager}
-                  onUpdatePrice={handleUpdatePrice}
-                />
-              </div>
-              <div className="lg:col-span-3 flex flex-col gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <PriceHistoryChart 
                   mainProduct={mainProduct} 
                   comparisonProducts={comparisonProducts}
@@ -280,13 +269,20 @@ export default function Home() {
                   mainProduct={mainProduct}
                   comparisonProducts={comparisonProducts}
                 />
-              </div>
             </div>
             <ComparisonSection 
               mainProduct={mainProduct} 
               comparisonProducts={comparisonProducts}
               onAddComparisonSku={handleAddComparisonSku}
               onRemoveComparisonSku={handleRemoveComparisonSku}
+            />
+            <SkuInfoCard 
+              product={mainProduct}
+              manager={mainProductManager}
+              availableManagers={managersForMainProduct}
+              onAssignManager={handleAssignManager}
+              onUnassignManager={handleUnassignManager}
+              onUpdatePrice={handleUpdatePrice}
             />
             {mainProduct && (
               <RecommendedActions 
