@@ -10,19 +10,18 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Building } from 'lucide-react';
 
 interface AddShopDialogProps {
-  children: React.ReactNode;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   onAddNewShop: (name: string) => void;
 }
 
-export function AddShopDialog({ children, onAddNewShop }: AddShopDialogProps) {
-  const [open, setOpen] = useState(false);
+export function AddShopDialog({ open, onOpenChange, onAddNewShop }: AddShopDialogProps) {
   
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -30,15 +29,12 @@ export function AddShopDialog({ children, onAddNewShop }: AddShopDialogProps) {
     const name = formData.get('name') as string;
     if (name) {
       onAddNewShop(name.trim());
-      setOpen(false);
+      onOpenChange(false);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {children}
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Добавить новый магазин</DialogTitle>
@@ -59,7 +55,7 @@ export function AddShopDialog({ children, onAddNewShop }: AddShopDialogProps) {
                 </div>
             </div>
             <DialogFooter>
-                <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Отмена</Button>
+                <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Отмена</Button>
                 <Button type="submit">Добавить магазин</Button>
             </DialogFooter>
         </form>
