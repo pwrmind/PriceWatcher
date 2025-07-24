@@ -5,22 +5,26 @@ import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { SkuSidebar } from '@/components/app/sku-sidebar';
 import { PriceHistoryChart } from '@/components/app/price-history-chart';
 import { ComparisonSection } from '@/components/app/comparison-section';
-import { managedProducts, allAvailableProducts } from '@/lib/mock-data';
+import { allAvailableProducts as allAvailableProductsData, managedProducts as managedProductsData } from '@/lib/mock-data';
 import type { Product } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
   const { toast } = useToast();
-  const [managerProducts, setManagerProducts] = useState<Product[]>(managedProducts);
-  const [selectedSkuId, setSelectedSkuId] = useState<string | null>(managerProducts[0]?.id || null);
+
+  const allAvailableProducts = useMemo(() => allAvailableProductsData, []);
+  const managedProducts = useMemo(() => managedProductsData, []);
+
+  const [trackedSkus, setTrackedSkus] = useState<Product[]>(managedProducts);
+  const [selectedSkuId, setSelectedSkuId] = useState<string | null>(managedProducts[0]?.id || null);
   const [comparisonProducts, setComparisonProducts] = useState<Product[]>([]);
 
   const handleSelectSku = (id: string) => {
     setSelectedSkuId(id);
   };
 
-  const handleAddManagerSku = (id: string) => {
-    if (managerProducts.some(p => p.id === id)) {
+  const handleAddTrackedSku = (id: string) => {
+    if (trackedSkus.some(p => p.id === id)) {
       toast({
         title: "SKU уже отслеживается",
         description: `Продукт с SKU ${id} уже есть в вашем списке.`,
@@ -32,7 +36,7 @@ export default function Home() {
     const productToAdd = allAvailableProducts.find(p => p.id === id);
 
     if (productToAdd) {
-        setManagerProducts(prev => [...prev, productToAdd]);
+        setTrackedSkus(prev => [...prev, productToAdd]);
          toast({
             title: "SKU добавлен",
             description: `Продукт ${productToAdd.name} добавлен в ваш список.`,
@@ -47,8 +51,8 @@ export default function Home() {
     }
   };
 
-  const handleDeleteManagerSku = (id: string) => {
-    setManagerProducts(prods => {
+  const handleDeleteTrackedSku = (id: string) => {
+    setTrackedSkus(prods => {
       const remainingProducts = prods.filter(p => p.id !== id);
       if (selectedSkuId === id) {
         setSelectedSkuId(remainingProducts[0]?.id || null);
@@ -60,6 +64,16 @@ export default function Home() {
   };
   
   const handleAddComparisonSku = (id: string) => {
+    const mainProduct = trackedSkus.find(p => p.id === selectedSkuId);
+    if (mainProduct?.id === id) {
+        toast({
+            title: "SKU уже выбран",
+            description: "Этот продукт уже выбран как основной для сравнения.",
+            variant: "default",
+        });
+        return;
+    }
+
     if (comparisonProducts.some(p => p.id === id)) {
       toast({
         title: "SKU уже в сравнении",
@@ -86,16 +100,16 @@ export default function Home() {
     setComparisonProducts(prev => prev.filter(p => p.id !== id));
   };
 
-  const mainProduct = useMemo(() => managerProducts.find(p => p.id === selectedSkuId), [managerProducts, selectedSkuId]);
+  const mainProduct = useMemo(() => trackedSkus.find(p => p.id === selectedSkuId), [trackedSkus, selectedSkuId]);
 
   return (
     <SidebarProvider>
       <SkuSidebar
-        products={managerProducts}
+        products={trackedSkus}
         selectedSkuId={selectedSkuId}
         onSelectSku={handleSelectSku}
-        onAddSku={handleAddManagerSku}
-        onDeleteSku={handleDeleteManagerSku}
+        onAddSku={handleAddTrackedSku}
+        onDeleteSku={handleDeleteTrackedSku}
       />
       <SidebarInset>
         <main className="flex flex-col gap-8 p-4 md:p-8">
