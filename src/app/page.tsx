@@ -6,8 +6,8 @@ import { SkuSidebar } from '@/components/app/sku-sidebar';
 import { PriceHistoryChart } from '@/components/app/price-history-chart';
 import { ComparisonSection } from '@/components/app/comparison-section';
 import { RecommendedActions } from '@/components/app/recommended-actions';
-import { allAvailableProducts as allAvailableProductsData, managedProducts as managedProductsData, managers } from '@/lib/mock-data';
-import type { Product, Manager } from '@/lib/types';
+import { allAvailableProducts as allAvailableProductsData, managedProducts as managedProductsData, managers, shops } from '@/lib/mock-data';
+import type { Product, Manager, Shop } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
@@ -16,12 +16,28 @@ export default function Home() {
   const allAvailableProducts = useMemo(() => allAvailableProductsData, []);
   
   const [trackedSkus, setTrackedSkus] = useState<Product[]>(managedProductsData);
-  const [selectedManagerId, setSelectedManagerId] = useState<string>(managers[0].id);
+  const [selectedShopId, setSelectedShopId] = useState<string>(shops[0].id);
+
+  const managersForSelectedShop = useMemo(() => managers.filter(m => m.shopId === selectedShopId), [selectedShopId]);
   
-  const managedProducts = useMemo(() => trackedSkus.filter(p => p.managerId === selectedManagerId), [trackedSkus, selectedManagerId]);
+  const [selectedManagerId, setSelectedManagerId] = useState<string>(managersForSelectedShop[0].id);
+  
+  const productsForSelectedShop = useMemo(() => trackedSkus.filter(p => p.shopId === selectedShopId), [trackedSkus, selectedShopId]);
+  const managedProducts = useMemo(() => productsForSelectedShop.filter(p => p.managerId === selectedManagerId), [productsForSelectedShop, selectedManagerId]);
   
   const [selectedSkuId, setSelectedSkuId] = useState<string | null>(managedProducts[0]?.id || null);
   const [comparisonProducts, setComparisonProducts] = useState<Product[]>([]);
+
+  const handleShopChange = (shopId: string) => {
+    setSelectedShopId(shopId);
+    const newShopManagers = managers.filter(m => m.shopId === shopId);
+    const firstManagerId = newShopManagers[0]?.id || '';
+    setSelectedManagerId(firstManagerId);
+
+    const newShopProducts = trackedSkus.filter(p => p.shopId === shopId);
+    const newManagerProducts = newShopProducts.filter(p => p.managerId === firstManagerId);
+    setSelectedSkuId(newManagerProducts[0]?.id || null);
+  };
 
   const handleSelectSku = (id: string) => {
     setSelectedSkuId(id);
@@ -29,7 +45,7 @@ export default function Home() {
   
   const handleManagerChange = (managerId: string) => {
     setSelectedManagerId(managerId);
-    const newManagerProducts = trackedSkus.filter(p => p.managerId === managerId);
+    const newManagerProducts = productsForSelectedShop.filter(p => p.managerId === managerId);
     setSelectedSkuId(newManagerProducts[0]?.id || null);
   };
 
@@ -46,6 +62,14 @@ export default function Home() {
     const productToAdd = allAvailableProducts.find(p => p.id === id);
 
     if (productToAdd) {
+        if (productToAdd.shopId !== selectedShopId) {
+             toast({
+                title: "Неверный магазин",
+                description: `Этот SKU принадлежит другому магазину.`,
+                variant: "destructive",
+            });
+            return;
+        }
         if (productToAdd.managerId !== selectedManagerId) {
              toast({
                 title: "Неверный менеджер",
@@ -73,7 +97,7 @@ export default function Home() {
     setTrackedSkus(prods => {
       const remainingProducts = prods.filter(p => p.id !== id);
       if (selectedSkuId === id) {
-        const remainingManaged = remainingProducts.filter(p => p.managerId === selectedManagerId);
+        const remainingManaged = remainingProducts.filter(p => p.managerId === selectedManagerId && p.shopId === selectedShopId);
         setSelectedSkuId(remainingManaged[0]?.id || null);
       }
       return remainingProducts;
@@ -125,7 +149,10 @@ export default function Home() {
     <SidebarProvider>
       <SkuSidebar
         products={managedProducts}
-        managers={managers}
+        shops={shops}
+        selectedShopId={selectedShopId}
+        onShopChange={handleShopChange}
+        managers={managersForSelectedShop}
         selectedManagerId={selectedManagerId}
         onManagerChange={handleManagerChange}
         selectedSkuId={selectedSkuId}

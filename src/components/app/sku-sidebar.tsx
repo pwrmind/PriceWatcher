@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, Trash2 } from 'lucide-react';
+import { Search, Trash2, Building } from 'lucide-react';
 import Image from 'next/image';
 import {
   Sidebar,
@@ -13,7 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { PricePrediction } from './price-prediction';
-import type { Product, Manager } from '@/lib/types';
+import type { Product, Manager, Shop } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Input } from '@/components/ui/input';
@@ -24,6 +24,9 @@ import { Badge } from '@/components/ui/badge';
 
 interface SkuSidebarProps {
   products: Product[];
+  shops: Shop[];
+  selectedShopId: string;
+  onShopChange: (id: string) => void;
   managers: Manager[];
   selectedManagerId: string;
   onManagerChange: (id: string) => void;
@@ -35,6 +38,9 @@ interface SkuSidebarProps {
 
 export function SkuSidebar({
   products,
+  shops,
+  selectedShopId,
+  onShopChange,
   managers,
   selectedManagerId,
   onManagerChange,
@@ -55,12 +61,34 @@ export function SkuSidebar({
   };
   
   const selectedManager = managers.find(m => m.id === selectedManagerId);
+  const selectedShop = shops.find(s => s.id === selectedShopId);
 
   return (
     <Sidebar>
       <SidebarHeader>
         <div className='px-2 space-y-2'>
             <h2 className="text-xl font-semibold">Ваши SKU</h2>
+            <Select value={selectedShopId} onValueChange={onShopChange}>
+                <SelectTrigger className="w-full">
+                    <SelectValue asChild>
+                        <div className="flex items-center gap-2">
+                           <Building className="w-5 h-5" />
+                           <span>{selectedShop?.name}</span>
+                        </div>
+                    </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                    {shops.map(shop => (
+                        <SelectItem key={shop.id} value={shop.id}>
+                            <div className="flex items-center gap-2">
+                                <Building className="w-5 h-5" />
+                                <span>{shop.name}</span>
+                            </div>
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+
             <Select value={selectedManagerId} onValueChange={onManagerChange}>
               <SelectTrigger className="w-full">
                 <SelectValue asChild>

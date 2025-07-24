@@ -3,10 +3,16 @@ export type PriceData = {
   price: number;
 };
 
+export type Shop = {
+  id: string;
+  name: string;
+};
+
 export type Manager = {
   id: string;
   name: string;
   avatarUrl: string;
+  shopId: string;
 };
 
 export type Product = {
@@ -14,6 +20,7 @@ export type Product = {
   name: string;
   imageUrl: string;
   managerId: string;
+  shopId: string;
   marketplace: string;
   rating: number;
   reviews: number;
