@@ -108,7 +108,7 @@ export function PriceHistoryChart({ mainProduct, comparisonProducts }: PriceHist
         </div>
       </CardHeader>
       <CardContent className="flex-grow">
-        <ChartContainer config={chartConfig} className="h-[245px] w-full">
+        <ChartContainer config={chartConfig} className="h-full w-full">
           <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => new Date(value).toLocaleDateString('ru-RU', { month: 'short', day: 'numeric' })} />
