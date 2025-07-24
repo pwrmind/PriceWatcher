@@ -16,7 +16,10 @@ interface ComparisonTableProps {
 }
 
 export function ComparisonTable({ mainProduct, comparisonProducts, onRemoveComparisonSku }: ComparisonTableProps) {
-  const allProducts = mainProduct ? [mainProduct, ...comparisonProducts] : [...comparisonProducts];
+  const filteredComparisonProducts = mainProduct
+    ? comparisonProducts.filter((p) => p.id !== mainProduct.id)
+    : comparisonProducts;
+  const allProducts = mainProduct ? [mainProduct, ...filteredComparisonProducts] : [...filteredComparisonProducts];
   const mainProductPrice = mainProduct?.priceHistory.slice(-1)[0]?.price;
 
   if (allProducts.length === 0) {
