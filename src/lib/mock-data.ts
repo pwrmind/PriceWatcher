@@ -22,10 +22,10 @@ function generatePriceHistory(basePrice: number, days: number, sku: string): { d
     const date = new Date();
     date.setDate(date.getDate() - i);
     price += (random() - 0.5) * (basePrice * 0.05); // smaller fluctuation
-    if (i % 30 === 0 && i > 0) {
+    if (i % 30 === 0 && i > 0 && days > 60) {
       price *= (0.9 + random() * 0.05); // pseudo-seasonal drop
     }
-    if (i % 15 === 0) {
+    if (i % 15 === 0 && days > 30) {
       price *= (1.02 + random() * 0.01); // pseudo-seasonal rise
     }
     history.push({
@@ -182,7 +182,7 @@ export const allAvailableProducts: Product[] = [
             ...p,
             shopId: marketInfo.shopId,
             marketplace: marketInfo.marketplace,
-            priceHistory: generatePriceHistory(basePrices[p.id] || 100, 90, p.id),
+            priceHistory: generatePriceHistory(basePrices[p.id] || 100, 365, p.id),
         }
     }),
     ...competitorProducts.map(p => ({
@@ -191,7 +191,7 @@ export const allAvailableProducts: Product[] = [
         shopId: 'competitor',
         managerId: 'competitor',
         notifications: 0,
-        priceHistory: generatePriceHistory((basePrices[p.id] || 150) * 1.1, 90, p.id),
+        priceHistory: generatePriceHistory((basePrices[p.id] || 150) * 1.1, 365, p.id),
     }))
 ];
 

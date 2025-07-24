@@ -191,8 +191,14 @@ export default function Home() {
       />
       <SidebarInset>
         <main className="flex flex-col gap-8 p-4 md:p-8">
-            <PriceHistoryChart mainProduct={mainProduct} comparisonProducts={comparisonProducts} />
-            {mainProduct && <RecommendedActions mainProduct={mainProduct} comparisonProducts={comparisonProducts} />}
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+              <div className="lg:col-span-3">
+                <PriceHistoryChart mainProduct={mainProduct} comparisonProducts={comparisonProducts} />
+              </div>
+              <div className="lg:col-span-2">
+                {mainProduct && <RecommendedActions mainProduct={mainProduct} comparisonProducts={comparisonProducts} />}
+              </div>
+            </div>
             <ComparisonSection 
               mainProduct={mainProduct} 
               comparisonProducts={comparisonProducts}
