@@ -215,12 +215,13 @@ export function SkuSidebar({
                             {manager ? (
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-primary">
-                                            <Pencil className="h-4 w-4" />
-                                        </Button>
+                                        <Avatar className="w-7 h-7 cursor-pointer ring-1 ring-transparent hover:ring-primary transition-shadow">
+                                            <AvatarImage src={manager.avatarUrl} alt={manager.name} />
+                                            <AvatarFallback>{manager.name.charAt(0)}</AvatarFallback>
+                                        </Avatar>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>Изменить менеджера: {manager.name}</p>
+                                        <p>Менеджер: {manager.name}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             ) : (
