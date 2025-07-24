@@ -28,6 +28,7 @@ export type Product = {
   priceHistory: PriceData[];
   notifications: number;
   currentPrice: number;
+  competitorSkus: string[];
 };
 
 export type PricePredictionType = {

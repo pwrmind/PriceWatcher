@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { SkuSidebar } from '@/components/app/sku-sidebar';
 import { PriceHistoryChart } from '@/components/app/price-history-chart';
@@ -50,9 +50,19 @@ export default function Home() {
   }, [productsForSelectedShop, selectedManagerId, searchTerm]);
   
   const [selectedSkuId, setSelectedSkuId] = useState<string | null>(managedProducts[0]?.id || null);
-  const [comparisonProducts, setComparisonProducts] = useState<Product[]>(
-    allAvailableProductsData.filter(p => ['COMP-GGL-NEST-A', 'COMP-BOSE-QC-45'].includes(p.id))
-  );
+  const [comparisonProducts, setComparisonProducts] = useState<Product[]>([]);
+
+  const mainProduct = useMemo(() => trackedSkus.find(p => p.id === selectedSkuId), [trackedSkus, selectedSkuId]);
+
+  useEffect(() => {
+    if (mainProduct) {
+      const competitorIds = mainProduct.competitorSkus || [];
+      const competitors = allAvailableProducts.filter(p => competitorIds.includes(p.id));
+      setComparisonProducts(competitors);
+    } else {
+      setComparisonProducts([]);
+    }
+  }, [mainProduct, allAvailableProducts]);
 
   const handleShopChange = (shopId: string) => {
     setSelectedShopId(shopId);
@@ -216,8 +226,6 @@ export default function Home() {
         variant: "default",
     });
   };
-
-  const mainProduct = useMemo(() => trackedSkus.find(p => p.id === selectedSkuId), [trackedSkus, selectedSkuId]);
 
   const managersForMainProduct = useMemo(() => {
     if (!mainProduct) return [];

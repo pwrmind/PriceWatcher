@@ -48,7 +48,7 @@ export const managers: Manager[] = [
   { id: 'manager-4', name: 'Игорь Васильев', avatarUrl: 'https://placehold.co/40x40.png', shopId: 'shop-2' },
 ];
 
-const allProductsData: Omit<Product, 'priceHistory' | 'shopId' | 'marketplace' | 'currentPrice'>[] = [
+const allProductsData: Omit<Product, 'priceHistory' | 'shopId' | 'marketplace' | 'currentPrice' | 'competitorSkus'>[] = [
   {
     id: 'B08H93ZRK9',
     name: 'Echo Dot (4-го поколения)',
@@ -142,6 +142,7 @@ const basePrices: { [key: string]: number } = {
   'B0C1J3V6P4': 129.99,
   'COMP-GGL-NEST-A': 99.99,
   'COMP-BOSE-QC-45': 329.00,
+  'COMP-ANKR-LBT-NC': 99.99,
 };
 
 const productMarketplaces: { [key: string]: { shopId: string, marketplace: string } } = {
@@ -155,8 +156,19 @@ const productMarketplaces: { [key: string]: { shopId: string, marketplace: strin
     'B0C1J3V6P4': { shopId: 'shop-2', marketplace: 'Филиал "Север"' },
 };
 
+const productCompetitors: { [key: string]: string[] } = {
+    'B08H93ZRK9': ['COMP-GGL-NEST-A'],
+    'B08P2H5L7G': ['COMP-GGL-NEST-A'],
+    'B09B8V2T6C': ['COMP-BOSE-QC-45'],
+    'B09J29QDP9': ['COMP-GGL-NEST-A'],
+    'B07Y2P3Y9W': ['COMP-GGL-NEST-A', 'COMP-BOSE-QC-45'],
+    'B07XJ8C8F7': ['COMP-BOSE-QC-45', 'COMP-GGL-NEST-A'],
+    'B08F26C7R1': ['COMP-GGL-NEST-A'],
+    'B0C1J3V6P4': ['COMP-ANKR-LBT-NC'],
+};
+
 // Add some competitor products that don't belong to any of our shops
-const competitorProducts: Omit<Product, 'priceHistory' | 'shopId' | 'managerId' | 'notifications' | 'currentPrice'>[] = [
+const competitorProducts: Omit<Product, 'priceHistory' | 'shopId' | 'managerId' | 'notifications' | 'currentPrice' | 'competitorSkus'>[] = [
     {
         id: 'COMP-GGL-NEST-A',
         name: 'Google Nest Audio',
@@ -174,6 +186,15 @@ const competitorProducts: Omit<Product, 'priceHistory' | 'shopId' | 'managerId' 
         rating: 4.7,
         reviews: 19870,
         features: ['Шумоподавление', '24 часа работы', 'Режим Aware'],
+    },
+    {
+        id: 'COMP-ANKR-LBT-NC',
+        name: 'Anker Soundcore Liberty NC',
+        imageUrl: 'https://placehold.co/100x100.png',
+        marketplace: 'Competitor C',
+        rating: 4.4,
+        reviews: 5432,
+        features: ['ANC', 'Hi-Res', 'Беспроводная зарядка'],
     }
 ];
 
@@ -188,6 +209,7 @@ export const allAvailableProducts: Product[] = [
             marketplace: marketInfo.marketplace,
             priceHistory,
             currentPrice,
+            competitorSkus: productCompetitors[p.id] || [],
         }
     }),
     ...competitorProducts.map(p => {
@@ -201,6 +223,7 @@ export const allAvailableProducts: Product[] = [
             notifications: 0,
             priceHistory,
             currentPrice,
+            competitorSkus: [],
         }
     })
 ];
