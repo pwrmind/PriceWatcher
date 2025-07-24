@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Search, Trash2, Building, Users, Globe, Plus } from 'lucide-react';
+import { Search, Trash2, Building, Users, Globe, Plus, UserPlus } from 'lucide-react';
 import Image from 'next/image';
 import {
   Sidebar,
@@ -23,6 +23,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { AddSkuDialog } from './add-sku-dialog';
+import { AssignManagerDialog } from './assign-manager-dialog';
+
 
 interface SkuSidebarProps {
   products: Product[];
@@ -36,6 +38,7 @@ interface SkuSidebarProps {
   onSelectSku: (id: string) => void;
   onAddSku: (id: string) => void;
   onDeleteSku: (id: string) => void;
+  onAssignManager: (skuId: string, managerId: string) => void;
   searchTerm: string;
   onSearchChange: (term: string) => void;
 }
@@ -52,6 +55,7 @@ export function SkuSidebar({
   onSelectSku,
   onAddSku,
   onDeleteSku,
+  onAssignManager,
   searchTerm,
   onSearchChange,
 }: SkuSidebarProps) {
@@ -166,6 +170,8 @@ export function SkuSidebar({
           {products.map((product) => {
             const manager = managers.find(m => m.id === product.managerId);
             const shop = shops.find(s => s.id === product.shopId);
+            const managersForProductShop = managers.filter(m => m.shopId === product.shopId);
+
             return (
                 <SidebarMenuItem key={product.id} 
                 className={cn(
@@ -198,17 +204,36 @@ export function SkuSidebar({
                     </div>
                     </div>
                     <div className="flex items-center gap-2 ml-auto">
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Avatar className="w-6 h-6">
-                                    <AvatarImage src={manager?.avatarUrl} alt={manager?.name} />
-                                    <AvatarFallback>{manager?.name.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>{manager?.name}</p>
-                            </TooltipContent>
-                        </Tooltip>
+                        {manager ? (
+                             <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Avatar className="w-6 h-6">
+                                        <AvatarImage src={manager?.avatarUrl} alt={manager?.name} />
+                                        <AvatarFallback>{manager?.name.charAt(0)}</AvatarFallback>
+                                    </Avatar>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{manager?.name}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        ) : (
+                           <AssignManagerDialog 
+                                managers={managersForProductShop}
+                                onAssignManager={(managerId) => onAssignManager(product.id, managerId)}
+                            >
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-primary">
+                                            <UserPlus className="h-4 w-4"/>
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Назначить менеджера</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </AssignManagerDialog>
+                        )}
+                       
                          <Tooltip>
                             <TooltipTrigger asChild>
                                  <div className="flex items-center justify-center w-6 h-6 rounded-full bg-muted">

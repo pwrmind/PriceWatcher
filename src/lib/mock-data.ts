@@ -83,7 +83,7 @@ const allProductsData: Omit<Product, 'priceHistory' | 'shopId' | 'marketplace'>[
     id: 'B09J29QDP9',
     name: 'Apple HomePod mini',
     imageUrl: 'https://placehold.co/100x100.png',
-    managerId: 'manager-3',
+    managerId: null, // Unassigned
     rating: 4.8,
     reviews: 45678,
     features: ['360-градусный звук', 'Интеграция с Siri', 'Цвет «серый космос»', 'Интерком'],
@@ -113,7 +113,7 @@ const allProductsData: Omit<Product, 'priceHistory' | 'shopId' | 'marketplace'>[
     id: 'B08F26C7R1',
     name: 'Amazon Echo Show 10 (3rd Gen)',
     imageUrl: 'https://placehold.co/100x100.png',
-    managerId: 'manager-1',
+    managerId: null, // Unassigned
     rating: 4.7,
     reviews: 32109,
     features: ['HD-дисплей', 'Движение', 'Alexa', 'Камера 13 Мп'],
@@ -189,7 +189,7 @@ export const allAvailableProducts: Product[] = [
         ...p,
         id: p.id,
         shopId: 'competitor',
-        managerId: 'competitor',
+        managerId: null,
         notifications: 0,
         priceHistory: generatePriceHistory((basePrices[p.id] || 150) * 1.1, 365, p.id),
     }))

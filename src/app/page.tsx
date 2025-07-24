@@ -169,6 +169,15 @@ export default function Home() {
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
   };
+  
+  const handleAssignManager = (skuId: string, managerId: string) => {
+    setTrackedSkus(prev => prev.map(p => p.id === skuId ? { ...p, managerId } : p));
+    toast({
+        title: "Менеджер назначен",
+        description: `Новый менеджер был успешно назначен на SKU ${skuId}.`,
+        variant: "default",
+    });
+  };
 
   const mainProduct = useMemo(() => trackedSkus.find(p => p.id === selectedSkuId), [trackedSkus, selectedSkuId]);
 
@@ -186,6 +195,7 @@ export default function Home() {
         onSelectSku={handleSelectSku}
         onAddSku={handleAddTrackedSku}
         onDeleteSku={handleDeleteTrackedSku}
+        onAssignManager={handleAssignManager}
         searchTerm={searchTerm}
         onSearchChange={handleSearchChange}
       />

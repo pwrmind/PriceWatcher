@@ -19,7 +19,7 @@ export type Product = {
   id: string; // SKU
   name: string;
   imageUrl: string;
-  managerId: string;
+  managerId: string | null;
   shopId: string;
   marketplace: string;
   rating: number;
