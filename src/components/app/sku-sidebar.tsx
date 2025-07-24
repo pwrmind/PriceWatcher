@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus, Search, Trash2, CheckSquare, Square } from 'lucide-react';
+import { Search, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import {
   Sidebar,
@@ -13,14 +13,20 @@ import {
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { PricePrediction } from './price-prediction';
-import type { Product } from '@/lib/types';
+import type { Product, Manager } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Input } from '@/components/ui/input';
 import { ThemeToggle } from './theme-toggle';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 
 interface SkuSidebarProps {
   products: Product[];
+  managers: Manager[];
+  selectedManagerId: string;
+  onManagerChange: (id: string) => void;
   selectedSkuId: string | null;
   onSelectSku: (id: string) => void;
   onAddSku: (id: string) => void;
@@ -29,6 +35,9 @@ interface SkuSidebarProps {
 
 export function SkuSidebar({
   products,
+  managers,
+  selectedManagerId,
+  onManagerChange,
   selectedSkuId,
   onSelectSku,
   onAddSku,
@@ -44,11 +53,41 @@ export function SkuSidebar({
       event.currentTarget.reset();
     }
   };
+  
+  const selectedManager = managers.find(m => m.id === selectedManagerId);
 
   return (
     <Sidebar>
       <SidebarHeader>
-        <h2 className="text-xl font-semibold px-2">Ваши SKU</h2>
+        <div className='px-2 space-y-2'>
+            <h2 className="text-xl font-semibold">Ваши SKU</h2>
+            <Select value={selectedManagerId} onValueChange={onManagerChange}>
+              <SelectTrigger className="w-full">
+                <SelectValue asChild>
+                    <div className="flex items-center gap-2">
+                        <Avatar className="w-6 h-6">
+                            <AvatarImage src={selectedManager?.avatarUrl} alt={selectedManager?.name} />
+                            <AvatarFallback>{selectedManager?.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <span>{selectedManager?.name}</span>
+                    </div>
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {managers.map(manager => (
+                  <SelectItem key={manager.id} value={manager.id}>
+                    <div className="flex items-center gap-2">
+                        <Avatar className="w-6 h-6">
+                            <AvatarImage src={manager.avatarUrl} alt={manager.name} />
+                            <AvatarFallback>{manager.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <span>{manager.name}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+        </div>
         <form onSubmit={handleAddSku} className="relative px-2">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input name="sku" placeholder="Добавить свой SKU..." className="pl-8 bg-background" />
@@ -57,34 +96,51 @@ export function SkuSidebar({
       <Separator />
       <SidebarContent className="p-0">
         <SidebarMenu className="p-2">
-          {products.map((product) => (
-            <SidebarMenuItem key={product.id} 
-              className={cn(
-                "rounded-lg transition-colors cursor-pointer hover:bg-sidebar-accent",
-                selectedSkuId === product.id && 'bg-sidebar-accent ring-2 ring-primary'
-              )}
-              onClick={() => onSelectSku(product.id)}
-            >
-              <div className="flex items-center w-full gap-3 p-2">
-                <Image
-                  src={product.imageUrl}
-                  alt={product.name}
-                  width={40}
-                  height={40}
-                  className="rounded-md shrink-0"
-                  data-ai-hint="product image"
-                />
-                <div className="flex-grow overflow-hidden">
-                  <p className="font-semibold truncate text-sm">{product.name}</p>
-                  <div className="flex items-center gap-2">
-                    <p className="text-xs text-muted-foreground">{product.id}</p>
-                    <PricePrediction sku={product.id} priceHistory={product.priceHistory} />
-                  </div>
-                </div>
-                <div className="flex items-center gap-1 ml-auto">
+          {products.map((product) => {
+            const manager = managers.find(m => m.id === product.managerId);
+            return (
+                <SidebarMenuItem key={product.id} 
+                className={cn(
+                    "rounded-lg transition-colors cursor-pointer hover:bg-sidebar-accent h-auto",
+                    selectedSkuId === product.id && 'bg-sidebar-accent ring-2 ring-primary'
+                )}
+                onClick={() => onSelectSku(product.id)}
+                >
+                <div className="flex items-center w-full gap-3 p-2">
+                    <Image
+                    src={product.imageUrl}
+                    alt={product.name}
+                    width={40}
+                    height={40}
+                    className="rounded-md shrink-0"
+                    data-ai-hint="product image"
+                    />
+                    <div className="flex-grow overflow-hidden">
+                    <p className="font-semibold truncate text-sm">{product.name}</p>
+                    <div className="flex items-center gap-2">
+                        <p className="text-xs text-muted-foreground">{product.id}</p>
+                        <PricePrediction sku={product.id} priceHistory={product.priceHistory} />
+                    </div>
+                    </div>
+                    <div className="flex flex-col items-center gap-1 ml-auto">
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Avatar className="w-6 h-6">
+                                    <AvatarImage src={manager?.avatarUrl} alt={manager?.name} />
+                                    <AvatarFallback>{manager?.name.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>{manager?.name}</p>
+                            </TooltipContent>
+                        </Tooltip>
+                         {product.notifications > 0 && (
+                            <Badge variant="destructive" className="h-5 w-5 p-0 flex items-center justify-center text-xs">{product.notifications}</Badge>
+                         )}
+                    </div>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={(e) => {e.stopPropagation(); onDeleteSku(product.id);}} aria-label="Удалить SKU">
+                            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive self-start" onClick={(e) => {e.stopPropagation(); onDeleteSku(product.id);}} aria-label="Удалить SKU">
                                 <Trash2 className="h-4 w-4" />
                             </Button>
                         </TooltipTrigger>
@@ -93,9 +149,9 @@ export function SkuSidebar({
                         </TooltipContent>
                     </Tooltip>
                 </div>
-              </div>
-            </SidebarMenuItem>
-          ))}
+                </SidebarMenuItem>
+            )
+          })}
         </SidebarMenu>
       </SidebarContent>
       <Separator/>

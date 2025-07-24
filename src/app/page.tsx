@@ -5,22 +5,31 @@ import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { SkuSidebar } from '@/components/app/sku-sidebar';
 import { PriceHistoryChart } from '@/components/app/price-history-chart';
 import { ComparisonSection } from '@/components/app/comparison-section';
-import { allAvailableProducts as allAvailableProductsData, managedProducts as managedProductsData } from '@/lib/mock-data';
-import type { Product } from '@/lib/types';
+import { allAvailableProducts as allAvailableProductsData, managedProducts as managedProductsData, managers } from '@/lib/mock-data';
+import type { Product, Manager } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
   const { toast } = useToast();
 
   const allAvailableProducts = useMemo(() => allAvailableProductsData, []);
-  const managedProducts = useMemo(() => managedProductsData, []);
-
-  const [trackedSkus, setTrackedSkus] = useState<Product[]>(managedProducts);
+  
+  const [trackedSkus, setTrackedSkus] = useState<Product[]>(managedProductsData);
+  const [selectedManagerId, setSelectedManagerId] = useState<string>(managers[0].id);
+  
+  const managedProducts = useMemo(() => trackedSkus.filter(p => p.managerId === selectedManagerId), [trackedSkus, selectedManagerId]);
+  
   const [selectedSkuId, setSelectedSkuId] = useState<string | null>(managedProducts[0]?.id || null);
   const [comparisonProducts, setComparisonProducts] = useState<Product[]>([]);
 
   const handleSelectSku = (id: string) => {
     setSelectedSkuId(id);
+  };
+  
+  const handleManagerChange = (managerId: string) => {
+    setSelectedManagerId(managerId);
+    const newManagerProducts = trackedSkus.filter(p => p.managerId === managerId);
+    setSelectedSkuId(newManagerProducts[0]?.id || null);
   };
 
   const handleAddTrackedSku = (id: string) => {
@@ -36,6 +45,14 @@ export default function Home() {
     const productToAdd = allAvailableProducts.find(p => p.id === id);
 
     if (productToAdd) {
+        if (productToAdd.managerId !== selectedManagerId) {
+             toast({
+                title: "Неверный менеджер",
+                description: `Этот SKU принадлежит другому менеджеру.`,
+                variant: "destructive",
+            });
+            return;
+        }
         setTrackedSkus(prev => [...prev, productToAdd]);
          toast({
             title: "SKU добавлен",
@@ -55,7 +72,8 @@ export default function Home() {
     setTrackedSkus(prods => {
       const remainingProducts = prods.filter(p => p.id !== id);
       if (selectedSkuId === id) {
-        setSelectedSkuId(remainingProducts[0]?.id || null);
+        const remainingManaged = remainingProducts.filter(p => p.managerId === selectedManagerId);
+        setSelectedSkuId(remainingManaged[0]?.id || null);
       }
       return remainingProducts;
     });
@@ -105,7 +123,10 @@ export default function Home() {
   return (
     <SidebarProvider>
       <SkuSidebar
-        products={trackedSkus}
+        products={managedProducts}
+        managers={managers}
+        selectedManagerId={selectedManagerId}
+        onManagerChange={handleManagerChange}
         selectedSkuId={selectedSkuId}
         onSelectSku={handleSelectSku}
         onAddSku={handleAddTrackedSku}
