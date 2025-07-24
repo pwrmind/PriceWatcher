@@ -4,7 +4,7 @@
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Star, UserPlus } from 'lucide-react';
+import { Building, Star, UserPlus } from 'lucide-react';
 import type { Product, Manager } from '@/lib/types';
 import { AssignManagerDialog } from './assign-manager-dialog';
 import { Button } from '../ui/button';
@@ -53,6 +53,10 @@ export function SkuInfoCard({ product, manager, availableManagers, onAssignManag
             <div>
                  <CardTitle>{product.name}</CardTitle>
                  <CardDescription>SKU: {product.id}</CardDescription>
+                 <CardDescription className="flex items-center gap-1 mt-1">
+                    <Building className="w-4 h-4"/>
+                    {product.marketplace}
+                 </CardDescription>
             </div>
             <AssignManagerDialog
               managers={availableManagers}
